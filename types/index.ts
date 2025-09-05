@@ -34,24 +34,6 @@ export interface Message {
   createdAt: string
   isVerified: boolean
   isEdited?: boolean
-  upvotes: string[]
-  downvotes: string[]
-  replies: Reply[]
-  parentId?: string
-}
-
-export interface Reply {
-  id: string
-  messageId: string
-  authorId: string
-  author: string
-  authorAvatar: string
-  content: string
-  timestamp: string
-  createdAt: string
-  isVerified: boolean
-  upvotes: string[]
-  downvotes: string[]
 }
 
 export interface UserStats {
