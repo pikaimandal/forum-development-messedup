@@ -84,7 +84,7 @@ const demoMessages: Record<string, Message[]> = {
       id: "2",
       author: "@NewMember",
       authorAvatar: "/diverse-user-avatars.png",
-      content: "Hi everyone! Just joined World Forum and excited to be part of this human-verified community! 🎉",
+      content: "Hi everyone! Just joined Forum and excited to be part of this human-verified community! 🎉",
       timestamp: "1h",
     },
     {
@@ -138,17 +138,17 @@ const demoMessages: Record<string, Message[]> = {
       author: "@HelpModerator",
       authorAvatar: "/diverse-user-avatars.png",
       content:
-        "This is the Q&A community! Ask any questions about World Forum, World ID, or anything else. We're here to help! ❓",
+        "This is the Q&A community! Ask any questions about Forum, World ID, or anything else. We're here to help! ❓",
       timestamp: "6h",
     },
   ],
   announcements: [
     {
       id: "1",
-      author: "@WorldForumTeam",
+      author: "@ForumTeam",
       authorAvatar: "/announcement-team.png",
       content:
-        "🎉 Welcome to World Forum Beta! We're excited to launch the world's first human-verified forum platform. More features coming soon!",
+        "🎉 Welcome to Forum Beta! We're excited to launch the world's first human-verified forum platform. More features coming soon!",
       timestamp: "1d",
     },
   ],

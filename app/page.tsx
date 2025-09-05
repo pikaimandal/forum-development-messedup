@@ -7,7 +7,7 @@ import { MainApp } from "@/components/main-app"
 import type { Screen } from "@/types"
 import { APP_CONFIG } from "@/lib/constants"
 
-export default function WorldForumApp() {
+export default function ForumApp() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("splash")
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 

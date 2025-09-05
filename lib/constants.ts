@@ -1,5 +1,5 @@
 export const APP_CONFIG = {
-  name: "World Forum",
+  name: "Forum",
   description: "Human Verified Community",
   version: "1.0.0",
   splashDuration: 3000,

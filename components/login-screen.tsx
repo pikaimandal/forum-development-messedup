@@ -26,7 +26,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Welcome to World Forum</CardTitle>
+          <CardTitle className="text-2xl font-bold">Welcome to Forum</CardTitle>
           <CardDescription>Join the world's first human-verified community platform</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

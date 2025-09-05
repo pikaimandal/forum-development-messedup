@@ -13,9 +13,8 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "World Forum - Human Verified Community",
+  title: "Forum - Human Verified Community",
   description: "The world's first human-verified forum platform for authentic community discussions",
-  generator: "v0.app",
 }
 
 export default function RootLayout({

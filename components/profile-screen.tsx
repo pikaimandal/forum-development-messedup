@@ -339,7 +339,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-3">
-              By using World Forum, you agree to our terms of service. This includes maintaining respectful discourse
+              By using Forum, you agree to our terms of service. This includes maintaining respectful discourse
               and following community guidelines.
             </p>
             <Button variant="outline" size="sm">

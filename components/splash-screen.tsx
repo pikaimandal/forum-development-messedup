@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 
 export function SplashScreen() {
   const [displayText, setDisplayText] = useState("")
-  const fullText = "World Forum"
+  const fullText = "Forum"
   const typingSpeed = 150
 
   useEffect(() => {

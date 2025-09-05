@@ -106,7 +106,7 @@ const communityData: Record<string, Community> = {
     id: "announcements",
     name: "Announcements",
     description:
-      "Official updates, news, and important platform announcements. Stay up to date with the latest World Forum features, policy changes, and community updates.",
+      "Official updates, news, and important platform announcements. Stay up to date with the latest Forum features, policy changes, and community updates.",
     members: 15200,
     color: "bg-orange-500",
     rules: [
