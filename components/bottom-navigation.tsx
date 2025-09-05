@@ -29,8 +29,8 @@ export function BottomNavigation({ currentScreen, onScreenChange }: BottomNaviga
       ),
     },
     {
-      id: "chat" as MainScreen,
-      label: "Chat",
+      id: "discover" as MainScreen,
+      label: "Discover",
       icon: (active: boolean) => (
         <svg
           className={`w-6 h-6 ${active ? "text-primary" : "text-muted-foreground"}`}
@@ -42,7 +42,7 @@ export function BottomNavigation({ currentScreen, onScreenChange }: BottomNaviga
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}
-            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
           />
         </svg>
       ),

@@ -1,11 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Users, ChevronRight } from "lucide-react"
 
 interface Community {
   id: string
@@ -13,192 +11,65 @@ interface Community {
   description: string
   members: number
   color: string
-  posts: Post[]
-}
-
-interface Post {
-  id: string
-  title: string
-  content: string
-  author: string
-  authorAvatar: string
-  timestamp: string
-  upvotes: number
-  comments: number
-  communityId: string
-  isVerified: boolean
 }
 
 interface CommunitiesScreenProps {
-  onNavigateToChat: () => void
+  onNavigateToCommunity: (communityId: string) => void
+  joinedCommunities: Set<string>
 }
 
-// Demo data
 const communities: Community[] = [
   {
     id: "global-chat",
     name: "Global Chat",
-    description: "General discussion room for all topics",
+    description: "General discussion room for all topics and community introductions",
     members: 18500,
-    color: "bg-indigo-500",
-    posts: [
-      {
-        id: "7",
-        title: "Welcome to Global Chat! Introduce yourself",
-        content: "This is our general discussion space where verified humans can chat about anything...",
-        author: "CommunityMod",
-        authorAvatar: "/worldcoin-team.png",
-        timestamp: "30m",
-        upvotes: 342,
-        comments: 89,
-        communityId: "global-chat",
-        isVerified: true,
-      },
-      {
-        id: "8",
-        title: "What's everyone working on today?",
-        content: "Share what you're building, learning, or excited about today!",
-        author: "ActiveUser",
-        authorAvatar: "/diverse-user-avatars.png",
-        timestamp: "1h",
-        upvotes: 156,
-        comments: 67,
-        communityId: "global-chat",
-        isVerified: true,
-      },
-    ],
+    color: "bg-primary",
   },
   {
     id: "developer",
     name: "Developer",
-    description: "Technical discussions and development help",
+    description: "Technical discussions, code reviews, and development help",
     members: 5600,
-    color: "bg-green-500",
-    posts: [
-      {
-        id: "1",
-        title: "Best practices for World ID integration",
-        content: "Sharing some lessons learned from implementing World ID...",
-        author: "FullStackDev",
-        authorAvatar: "/developer-coding.png",
-        timestamp: "3h",
-        upvotes: 124,
-        comments: 34,
-        communityId: "developer",
-        isVerified: true,
-      },
-      {
-        id: "2",
-        title: "How to integrate World ID into your dApp",
-        content: "A comprehensive guide for developers looking to add human verification...",
-        author: "DevAdvocate",
-        authorAvatar: "/developer-working.png",
-        timestamp: "4h",
-        upvotes: 156,
-        comments: 28,
-        communityId: "developer",
-        isVerified: true,
-      },
-    ],
+    color: "bg-emerald-500",
   },
   {
     id: "world-news",
     name: "World News",
-    description: "Global news and current events discussion",
+    description: "Global news, current events, and world affairs discussion",
     members: 12300,
     color: "bg-blue-500",
-    posts: [
-      {
-        id: "3",
-        title: "Digital identity revolution gaining momentum worldwide",
-        content: "Countries around the world are exploring digital identity solutions...",
-        author: "NewsReporter",
-        authorAvatar: "/worldcoin-team.png",
-        timestamp: "2h",
-        upvotes: 234,
-        comments: 67,
-        communityId: "world-news",
-        isVerified: true,
-      },
-    ],
   },
   {
     id: "ai-tech",
     name: "AI & Tech",
-    description: "Artificial intelligence and technology innovations",
+    description: "Artificial intelligence, technology innovations, and future trends",
     members: 8900,
     color: "bg-purple-500",
-    posts: [
-      {
-        id: "4",
-        title: "The future of AI-powered identity verification",
-        content: "Exploring how AI is revolutionizing identity verification systems...",
-        author: "AIResearcher",
-        authorAvatar: "/tech-enthusiast.png",
-        timestamp: "1h",
-        upvotes: 189,
-        comments: 45,
-        communityId: "ai-tech",
-        isVerified: true,
-      },
-    ],
   },
   {
     id: "qa",
     name: "Q&A",
-    description: "Questions and answers from the community",
+    description: "Questions, answers, and knowledge sharing from the community",
     members: 6700,
-    color: "bg-yellow-500",
-    posts: [
-      {
-        id: "5",
-        title: "How does World ID protect my privacy?",
-        content: "I'm curious about the privacy implications of biometric verification...",
-        author: "CuriousUser",
-        authorAvatar: "/crypto-user.png",
-        timestamp: "5h",
-        upvotes: 89,
-        comments: 23,
-        communityId: "qa",
-        isVerified: true,
-      },
-    ],
+    color: "bg-amber-500",
   },
   {
     id: "announcements",
     name: "Announcements",
-    description: "Official updates and news",
+    description: "Official updates, news, and important platform announcements",
     members: 15200,
     color: "bg-orange-500",
-    posts: [
-      {
-        id: "6",
-        title: "World Forum Beta Launch!",
-        content: "Welcome to the world's first human-verified forum platform...",
-        author: "WorldForumTeam",
-        authorAvatar: "/announcement-team.png",
-        timestamp: "6h",
-        upvotes: 567,
-        comments: 123,
-        communityId: "announcements",
-        isVerified: true,
-      },
-    ],
   },
 ]
 
-export function CommunitiesScreen({ onNavigateToChat }: CommunitiesScreenProps) {
-  const [selectedCommunity, setSelectedCommunity] = useState<string>("all")
+export function CommunitiesScreen({ onNavigateToCommunity, joinedCommunities }: CommunitiesScreenProps) {
   const [searchQuery, setSearchQuery] = useState("")
 
-  const allPosts = communities.flatMap((community) => community.posts)
-  const filteredPosts =
-    selectedCommunity === "all" ? allPosts : communities.find((c) => c.id === selectedCommunity)?.posts || []
-
-  const searchedPosts = filteredPosts.filter(
-    (post) =>
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchQuery.toLowerCase()),
+  const filteredCommunities = communities.filter(
+    (community) =>
+      community.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      community.description.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
   const formatNumber = (num: number) => {
@@ -208,182 +79,80 @@ export function CommunitiesScreen({ onNavigateToChat }: CommunitiesScreenProps) 
     return num.toString()
   }
 
-  const handleCommunityClick = (communityId: string) => {
-    setSelectedCommunity(communityId)
-  }
-
   return (
     <div className="h-full bg-background flex flex-col">
-      {/* Header - Fixed at top */}
-      <div className="bg-card border-b border-border px-4 py-3 flex-shrink-0">
-        <div className="flex items-center justify-between mb-3">
-          <h1 className="text-xl font-bold text-foreground">World Forum</h1>
+      <div className="bg-card border-b border-border px-6 py-4 flex-shrink-0">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Communities</h1>
+            <p className="text-sm text-muted-foreground mt-1">Join verified human discussions</p>
+          </div>
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span className="text-sm text-muted-foreground">Human Verified</span>
+            <span className="text-sm font-medium text-muted-foreground">Human Verified</span>
           </div>
         </div>
 
-        {/* Search */}
         <Input
-          placeholder="Search posts..."
+          placeholder="Search communities..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full"
+          className="w-full bg-input border-border"
         />
       </div>
 
-      {/* Community Tabs - Fixed below header */}
-      <div className="bg-card border-b border-border px-4 py-2 flex-shrink-0">
-        <div className="flex space-x-2 overflow-x-auto">
-          <Button
-            variant={selectedCommunity === "all" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setSelectedCommunity("all")}
-            className="whitespace-nowrap"
-          >
-            All Posts
-          </Button>
-          {communities.map((community) => (
-            <Button
-              key={community.id}
-              variant={selectedCommunity === community.id ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setSelectedCommunity(community.id)}
-              className="whitespace-nowrap"
-            >
-              {community.name}
-            </Button>
-          ))}
-        </div>
-      </div>
+      <div className="flex-1 overflow-y-auto p-6">
+        <div className="grid gap-4">
+          {filteredCommunities.map((community) => {
+            const isJoined = joinedCommunities.has(community.id)
 
-      {/* Posts Feed - Scrollable content */}
-      <div className="flex-1 overflow-y-auto">
-        {selectedCommunity === "all" && (
-          <div className="p-4">
-            <h2 className="text-lg font-semibold mb-3">Communities</h2>
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              {communities.map((community) => (
-                <Card
-                  key={community.id}
-                  className="cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => handleCommunityClick(community.id)}
-                >
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center space-x-2">
-                      <div className={`w-4 h-4 rounded-full ${community.color}`}></div>
-                      <h3 className="font-semibold text-sm">{community.name}</h3>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-xs text-muted-foreground mb-2">{community.description}</p>
-                    <p className="text-xs text-muted-foreground">{formatNumber(community.members)} members</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
+            return (
+              <Card
+                key={community.id}
+                className="cursor-pointer hover:shadow-lg transition-all duration-200 border-border bg-card hover:bg-card/80"
+                onClick={() => onNavigateToCommunity(community.id)}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-start space-x-4 flex-1">
+                      <div
+                        className={`w-12 h-12 rounded-xl ${community.color} flex items-center justify-center flex-shrink-0`}
+                      >
+                        <Users className="w-6 h-6 text-white" />
+                      </div>
 
-        <div className="px-4 pb-4">
-          <h2 className="text-lg font-semibold mb-3">
-            {selectedCommunity === "all"
-              ? "Recent Posts"
-              : `Posts in ${communities.find((c) => c.id === selectedCommunity)?.name}`}
-          </h2>
-
-          <div className="space-y-3">
-            {searchedPosts.map((post, index) => {
-              const community = communities.find((c) => c.id === post.communityId)
-              return (
-                <div key={post.id}>
-                  <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={onNavigateToChat}>
-                    <CardContent className="p-4">
-                      <div className="flex items-start space-x-3">
-                        <Avatar className="w-10 h-10">
-                          <AvatarImage src={post.authorAvatar || "/placeholder.svg"} alt={post.author} />
-                          <AvatarFallback>{post.author[0]}</AvatarFallback>
-                        </Avatar>
-
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-2 mb-1">
-                            <span className="font-medium text-sm">{post.author}</span>
-                            {post.isVerified && (
-                              <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-                                <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
-                              </div>
-                            )}
-                            <span className="text-xs text-muted-foreground">•</span>
-                            <span className="text-xs text-muted-foreground">{post.timestamp}</span>
-                            {community && (
-                              <>
-                                <span className="text-xs text-muted-foreground">•</span>
-                                <Badge variant="secondary" className="text-xs">
-                                  {community.name}
-                                </Badge>
-                              </>
-                            )}
-                          </div>
-
-                          <h3 className="font-semibold text-foreground mb-2 line-clamp-2">{post.title}</h3>
-                          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{post.content}</p>
-
-                          <div className="flex items-center space-x-4">
-                            <button
-                              className="flex items-center space-x-1 text-muted-foreground hover:text-primary transition-colors"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                              </svg>
-                              <span className="text-xs">{post.upvotes}</span>
-                            </button>
-
-                            <button
-                              className="flex items-center space-x-1 text-muted-foreground hover:text-primary transition-colors"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                                />
-                              </svg>
-                              <span className="text-xs">{post.comments}</span>
-                            </button>
-
-                            <button
-                              className="flex items-center space-x-1 text-muted-foreground hover:text-primary transition-colors"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
-                                />
-                              </svg>
-                            </button>
-                          </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <h3 className="font-bold text-lg text-foreground">{community.name}</h3>
+                          {isJoined && (
+                            <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
+                              Joined
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-muted-foreground text-sm leading-relaxed mb-3">{community.description}</p>
+                        <div className="flex items-center space-x-1 text-muted-foreground">
+                          <Users className="w-4 h-4" />
+                          <span className="text-sm font-medium">{formatNumber(community.members)} members</span>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              )
-            })}
-          </div>
+                    </div>
+
+                    <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
+
+        {filteredCommunities.length === 0 && (
+          <div className="text-center py-12">
+            <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">No communities found</h3>
+            <p className="text-muted-foreground">Try adjusting your search terms</p>
+          </div>
+        )}
       </div>
     </div>
   )
