@@ -144,6 +144,9 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       timestamp: "2h",
       createdAt: "2024-01-15T10:00:00Z",
       isVerified: true,
+      upvotes: ["user_2", "user_3"],
+      downvotes: [],
+      replies: []
     },
     {
       id: "msg_2",
@@ -155,6 +158,23 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       timestamp: "1h",
       createdAt: "2024-01-15T11:00:00Z",
       isVerified: true,
+      upvotes: ["mod_1", "user_3"],
+      downvotes: [],
+      replies: [
+        {
+          id: "reply_1",
+          messageId: "msg_2",
+          authorId: "user_3",
+          author: "@ActiveUser",
+          authorAvatar: "/user-profile-avatar.png",
+          content: "Welcome! 🎉",
+          timestamp: "50m",
+          createdAt: "2024-01-15T11:10:00Z",
+          isVerified: true,
+          upvotes: ["user_2"],
+          downvotes: []
+        }
+      ]
     },
     {
       id: "msg_3",
@@ -166,6 +186,9 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       timestamp: "45m",
       createdAt: "2024-01-15T11:15:00Z",
       isVerified: true,
+      upvotes: ["mod_1"],
+      downvotes: [],
+      replies: []
     },
   ],
   developer: [
@@ -179,6 +202,9 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       timestamp: "3h",
       createdAt: "2024-01-15T09:00:00Z",
       isVerified: true,
+      upvotes: ["dev_2"],
+      downvotes: [],
+      replies: []
     },
     {
       id: "msg_5",
@@ -191,6 +217,9 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       timestamp: "2h",
       createdAt: "2024-01-15T10:00:00Z",
       isVerified: true,
+      upvotes: ["dev_1"],
+      downvotes: [],
+      replies: []
     },
   ],
   "world-news": [
@@ -205,6 +234,9 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       timestamp: "4h",
       createdAt: "2024-01-15T08:00:00Z",
       isVerified: true,
+      upvotes: [],
+      downvotes: [],
+      replies: []
     },
   ],
   "ai-tech": [
@@ -219,6 +251,9 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       timestamp: "5h",
       createdAt: "2024-01-15T07:00:00Z",
       isVerified: true,
+      upvotes: [],
+      downvotes: [],
+      replies: []
     },
   ],
   qa: [
@@ -233,6 +268,9 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       timestamp: "6h",
       createdAt: "2024-01-15T06:00:00Z",
       isVerified: true,
+      upvotes: [],
+      downvotes: [],
+      replies: []
     },
   ],
   announcements: [
@@ -247,6 +285,9 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       timestamp: "1d",
       createdAt: "2024-01-14T12:00:00Z",
       isVerified: true,
+      upvotes: [],
+      downvotes: [],
+      replies: []
     },
   ],
 }

@@ -1,382 +1,370 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ArrowLeft, Users, Smile, Send } from "lucide-react"
+import { ArrowLeft, Users, Send, ChevronUp, ChevronDown, MessageCircle } from "lucide-react"
+import { DEMO_COMMUNITIES, DEMO_MESSAGES, DEMO_USER } from "@/lib/data"
+import type { Message, Reply } from "@/types"
 
 interface ChatScreenProps {
   onBack: () => void
   communityId?: string
 }
 
-interface Message {
-  id: string
-  author: string
-  authorAvatar: string
-  content: string
-  timestamp: string
-}
-
-interface Community {
-  id: string
-  name: string
-  color: string
-  members: number
-}
-
-// Community data
-const communityData: Record<string, Community> = {
-  "global-chat": {
-    id: "global-chat",
-    name: "Global Chat",
-    color: "bg-primary",
-    members: 18500,
-  },
-  developer: {
-    id: "developer",
-    name: "Developer",
-    color: "bg-emerald-500",
-    members: 5600,
-  },
-  "world-news": {
-    id: "world-news",
-    name: "World News",
-    color: "bg-blue-500",
-    members: 12300,
-  },
-  "ai-tech": {
-    id: "ai-tech",
-    name: "AI & Tech",
-    color: "bg-purple-500",
-    members: 8900,
-  },
-  qa: {
-    id: "qa",
-    name: "Q&A",
-    color: "bg-amber-500",
-    members: 6700,
-  },
-  announcements: {
-    id: "announcements",
-    name: "Announcements",
-    color: "bg-orange-500",
-    members: 15200,
-  },
-}
-
-// Demo messages for different communities
-const demoMessages: Record<string, Message[]> = {
-  "global-chat": [
-    {
-      id: "1",
-      author: "@CommunityMod",
-      authorAvatar: "/worldcoin-team.png",
-      content:
-        "Welcome to Global Chat! This is where verified humans connect and share ideas. Feel free to introduce yourself! 👋",
-      timestamp: "2h",
-    },
-    {
-      id: "2",
-      author: "@NewMember",
-      authorAvatar: "/diverse-user-avatars.png",
-      content: "Hi everyone! Just joined Forum and excited to be part of this human-verified community! 🎉",
-      timestamp: "1h",
-    },
-    {
-      id: "3",
-      author: "@ActiveUser",
-      authorAvatar: "/user-profile-avatar.png",
-      content: "Great to have you here! The community is growing fast and the discussions are always interesting 😊",
-      timestamp: "45m",
-    },
-  ],
-  developer: [
-    {
-      id: "1",
-      author: "@DevLead",
-      authorAvatar: "/developer-coding.png",
-      content: "Anyone working with the latest World ID SDK? I'm having some integration questions 🤔",
-      timestamp: "3h",
-    },
-    {
-      id: "2",
-      author: "@FullStackDev",
-      authorAvatar: "/developer-working.png",
-      content:
-        "Just implemented it last week! The new documentation is really helpful. What specific issues are you facing?",
-      timestamp: "2h",
-    },
-  ],
-  "world-news": [
-    {
-      id: "1",
-      author: "@NewsEditor",
-      authorAvatar: "/worldcoin-team.png",
-      content:
-        "Digital identity adoption is accelerating globally. Several countries are now exploring similar verification systems 🌍",
-      timestamp: "4h",
-    },
-  ],
-  "ai-tech": [
-    {
-      id: "1",
-      author: "@AIResearcher",
-      authorAvatar: "/tech-enthusiast.png",
-      content:
-        "The intersection of AI and human verification is fascinating. Biometric tech is advancing so rapidly! 🤖",
-      timestamp: "5h",
-    },
-  ],
-  qa: [
-    {
-      id: "1",
-      author: "@HelpModerator",
-      authorAvatar: "/diverse-user-avatars.png",
-      content:
-        "This is the Q&A community! Ask any questions about Forum, World ID, or anything else. We're here to help! ❓",
-      timestamp: "6h",
-    },
-  ],
-  announcements: [
-    {
-      id: "1",
-      author: "@ForumTeam",
-      authorAvatar: "/announcement-team.png",
-      content:
-        "🎉 Welcome to Forum Beta! We're excited to launch the world's first human-verified forum platform. More features coming soon!",
-      timestamp: "1d",
-    },
-  ],
-}
-
-export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenProps) {
-  const [messages, setMessages] = useState<Message[]>(demoMessages[communityId] || [])
+export default function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenProps) {
   const [newMessage, setNewMessage] = useState("")
-  const [showReportModal, setShowReportModal] = useState<string | null>(null)
+  const [replyingTo, setReplyingTo] = useState<string | null>(null)
+  const [replyContent, setReplyContent] = useState("")
+  const [messages, setMessages] = useState<Message[]>(DEMO_MESSAGES[communityId] || [])
 
-  const community = communityData[communityId]
-  const maxCharacters = 500
+  const community = DEMO_COMMUNITIES[communityId]
 
-  if (!community) {
-    return (
-      <div className="h-full bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-bold text-foreground mb-2">Community not found</h2>
-          <Button onClick={onBack} variant="outline">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Go Back
-          </Button>
-        </div>
-      </div>
+  const handleVote = (messageId: string, voteType: 'upvote' | 'downvote') => {
+    setMessages(prevMessages => 
+      prevMessages.map(message => {
+        if (message.id === messageId) {
+          const newUpvotes = [...message.upvotes]
+          const newDownvotes = [...message.downvotes]
+          
+          if (voteType === 'upvote') {
+            if (newUpvotes.includes(DEMO_USER.id)) {
+              // Remove upvote
+              const index = newUpvotes.indexOf(DEMO_USER.id)
+              newUpvotes.splice(index, 1)
+            } else {
+              // Add upvote and remove downvote if exists
+              newUpvotes.push(DEMO_USER.id)
+              const downvoteIndex = newDownvotes.indexOf(DEMO_USER.id)
+              if (downvoteIndex > -1) {
+                newDownvotes.splice(downvoteIndex, 1)
+              }
+            }
+          } else {
+            if (newDownvotes.includes(DEMO_USER.id)) {
+              // Remove downvote
+              const index = newDownvotes.indexOf(DEMO_USER.id)
+              newDownvotes.splice(index, 1)
+            } else {
+              // Add downvote and remove upvote if exists
+              newDownvotes.push(DEMO_USER.id)
+              const upvoteIndex = newUpvotes.indexOf(DEMO_USER.id)
+              if (upvoteIndex > -1) {
+                newUpvotes.splice(upvoteIndex, 1)
+              }
+            }
+          }
+          
+          return {
+            ...message,
+            upvotes: newUpvotes,
+            downvotes: newDownvotes
+          }
+        }
+        return message
+      })
     )
   }
 
-  const formatNumber = (num: number) => {
-    if (num >= 1000) {
-      return (num / 1000).toFixed(1) + "k"
-    }
-    return num.toString()
+  const handleReplyVote = (messageId: string, replyId: string, voteType: 'upvote' | 'downvote') => {
+    setMessages(prevMessages =>
+      prevMessages.map(message => {
+        if (message.id === messageId) {
+          return {
+            ...message,
+            replies: message.replies.map(reply => {
+              if (reply.id === replyId) {
+                const newUpvotes = [...reply.upvotes]
+                const newDownvotes = [...reply.downvotes]
+                
+                if (voteType === 'upvote') {
+                  if (newUpvotes.includes(DEMO_USER.id)) {
+                    const index = newUpvotes.indexOf(DEMO_USER.id)
+                    newUpvotes.splice(index, 1)
+                  } else {
+                    newUpvotes.push(DEMO_USER.id)
+                    const downvoteIndex = newDownvotes.indexOf(DEMO_USER.id)
+                    if (downvoteIndex > -1) {
+                      newDownvotes.splice(downvoteIndex, 1)
+                    }
+                  }
+                } else {
+                  if (newDownvotes.includes(DEMO_USER.id)) {
+                    const index = newDownvotes.indexOf(DEMO_USER.id)
+                    newDownvotes.splice(index, 1)
+                  } else {
+                    newDownvotes.push(DEMO_USER.id)
+                    const upvoteIndex = newUpvotes.indexOf(DEMO_USER.id)
+                    if (upvoteIndex > -1) {
+                      newUpvotes.splice(upvoteIndex, 1)
+                    }
+                  }
+                }
+                
+                return {
+                  ...reply,
+                  upvotes: newUpvotes,
+                  downvotes: newDownvotes
+                }
+              }
+              return reply
+            })
+          }
+        }
+        return message
+      })
+    )
   }
 
-  const formatTimestamp = (timestamp: string) => {
-    // Convert relative time to more readable format
-    const now = new Date()
-    if (timestamp.includes("m")) {
-      return timestamp
-    } else if (timestamp.includes("h")) {
-      return timestamp
-    } else if (timestamp.includes("d")) {
-      return timestamp.replace("d", " day ago")
+  const handleReply = (messageId: string) => {
+    if (!replyContent.trim()) return
+
+    const newReply: Reply = {
+      id: `reply_${Date.now()}`,
+      messageId,
+      authorId: DEMO_USER.id,
+      author: DEMO_USER.username,
+      authorAvatar: DEMO_USER.avatar || "/placeholder-user.jpg",
+      content: replyContent,
+      timestamp: "now",
+      createdAt: new Date().toISOString(),
+      isVerified: DEMO_USER.isVerified,
+      upvotes: [],
+      downvotes: []
     }
-    return timestamp
+
+    setMessages(prevMessages =>
+      prevMessages.map(message => {
+        if (message.id === messageId) {
+          return {
+            ...message,
+            replies: [...message.replies, newReply]
+          }
+        }
+        return message
+      })
+    )
+
+    setReplyContent("")
+    setReplyingTo(null)
   }
 
   const handleSendMessage = () => {
-    if (!newMessage.trim() || newMessage.length > maxCharacters) return
+    if (!newMessage.trim()) return
 
     const message: Message = {
       id: `msg_${Date.now()}`,
-      author: "@You",
-      authorAvatar: "/user-profile-avatar.png",
+      communityId,
+      authorId: DEMO_USER.id,
+      author: DEMO_USER.username,
+      authorAvatar: DEMO_USER.avatar || "/placeholder-user.jpg",
       content: newMessage,
       timestamp: "now",
+      createdAt: new Date().toISOString(),
+      isVerified: DEMO_USER.isVerified,
+      upvotes: [],
+      downvotes: [],
+      replies: []
     }
 
-    setMessages((prev) => [...prev, message])
+    setMessages(prev => [...prev, message])
     setNewMessage("")
   }
 
-  const handleReportMessage = (messageId: string, reason: string) => {
-    console.log(`Reported message ${messageId} for: ${reason}`)
-    setShowReportModal(null)
-    // Here you would typically send the report to your backend
-  }
-
-  const handleEmojiClick = () => {
-    // Focus on the textarea to trigger mobile keyboard with emoji access
-    const textarea = document.querySelector('textarea[placeholder*="Message"]') as HTMLTextAreaElement
-    if (textarea) {
-      textarea.focus()
-    }
-  }
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
-    }
-  }
-
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-screen bg-background">
       {/* Header */}
-      <div className="px-4 py-3 flex-shrink-0 border-b border-border">
+      <div className="flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex items-center space-x-3">
-          <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
-            <ArrowLeft className="w-5 h-5" />
+          <Button variant="ghost" size="icon" onClick={onBack}>
+            <ArrowLeft className="h-5 w-5" />
           </Button>
-
-          <div className="flex items-center space-x-3 flex-1">
-            <div className={`w-8 h-8 rounded-full ${community.color} flex items-center justify-center`}>
-              <Users className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <h1 className="text-base font-semibold text-foreground">{community.name}</h1>
-              <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                <Users className="w-3 h-3" />
-                <span>{formatNumber(community.members)} members</span>
-                <span>•</span>
-                <span>ORB Verified</span>
-              </div>
+          <div className={`w-3 h-3 ${community?.color} rounded-full`} />
+          <div>
+            <h1 className="font-semibold">{community?.name}</h1>
+            <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+              <Users className="h-4 w-4" />
+              <span>{community?.members.toLocaleString()} members</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {messages.length === 0 ? (
-          <div className="text-center py-12">
-            <div className={`w-12 h-12 rounded-xl ${community.color} flex items-center justify-center mx-auto mb-3`}>
-              <Users className="w-6 h-6 text-white" />
-            </div>
-            <h3 className="text-base font-semibold text-foreground mb-2">Welcome to {community.name}!</h3>
-            <p className="text-muted-foreground text-sm mb-4">Start the conversation by sending the first message.</p>
-          </div>
-        ) : (
-          messages.map((message) => (
-            <Card key={message.id} className="border-border bg-card">
-              <CardContent className="p-3">
-                <div className="flex items-start space-x-3">
-                  <Avatar className="w-8 h-8 flex-shrink-0">
-                    <AvatarImage src={message.authorAvatar || "/placeholder.svg"} alt={message.author} />
-                    <AvatarFallback>{message.author[1] || message.author[0]}</AvatarFallback>
-                  </Avatar>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center space-x-2">
-                        <span className="font-medium text-foreground text-sm">{message.author}</span>
-                        <span className="text-xs text-muted-foreground">{formatTimestamp(message.timestamp)}</span>
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((message) => (
+          <Card key={message.id} className="bg-card">
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-3">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={message.authorAvatar} />
+                  <AvatarFallback>{message.author[1]}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <span className="font-medium text-sm">{message.author}</span>
+                    {message.isVerified && (
+                      <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs">✓</span>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="p-1 h-6 w-6 opacity-60 hover:opacity-100"
-                        onClick={() => setShowReportModal(message.id)}
-                      >
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-                          />
-                        </svg>
-                      </Button>
-                    </div>
-                    <p className="text-foreground text-sm leading-relaxed break-words">{message.content}</p>
+                    )}
+                    <span className="text-xs text-muted-foreground">{message.timestamp}</span>
                   </div>
+                  <p className="text-sm mb-3">{message.content}</p>
+                  
+                  {/* Vote and Reply buttons */}
+                  <div className="flex items-center space-x-4">
+                    <button
+                      onClick={() => handleVote(message.id, 'upvote')}
+                      className={`flex items-center space-x-1 ${
+                        message.upvotes.includes(DEMO_USER.id) 
+                          ? 'text-green-500' 
+                          : 'text-gray-500 hover:text-green-500'
+                      }`}
+                    >
+                      <ChevronUp className="h-4 w-4" />
+                      <span className="text-xs">{message.upvotes.length}</span>
+                    </button>
+                    <button
+                      onClick={() => handleVote(message.id, 'downvote')}
+                      className={`flex items-center space-x-1 ${
+                        message.downvotes.includes(DEMO_USER.id)
+                          ? 'text-red-500'
+                          : 'text-gray-500 hover:text-red-500'
+                      }`}
+                    >
+                      <ChevronDown className="h-4 w-4" />
+                      <span className="text-xs">{message.downvotes.length}</span>
+                    </button>
+                    <button
+                      onClick={() => setReplyingTo(replyingTo === message.id ? null : message.id)}
+                      className="flex items-center space-x-1 text-gray-500 hover:text-blue-500"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                      <span className="text-xs">Reply ({message.replies.length})</span>
+                    </button>
+                  </div>
+
+                  {/* Reply input */}
+                  {replyingTo === message.id && (
+                    <div className="mt-3 p-3 bg-muted rounded-lg">
+                      <Textarea
+                        placeholder="Write a reply..."
+                        value={replyContent}
+                        onChange={(e) => setReplyContent(e.target.value)}
+                        className="mb-2 text-sm"
+                        rows={2}
+                      />
+                      <div className="flex justify-end space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setReplyingTo(null)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => handleReply(message.id)}
+                          disabled={!replyContent.trim()}
+                        >
+                          Reply
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Replies */}
+                  {message.replies.length > 0 && (
+                    <div className="mt-3 pl-4 border-l-2 border-muted space-y-3">
+                      {message.replies.map((reply) => (
+                        <div key={reply.id} className="bg-muted/50 rounded-lg p-3">
+                          <div className="flex items-start space-x-2">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={reply.authorAvatar} />
+                              <AvatarFallback>{reply.author[1]}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center space-x-2 mb-1">
+                                <span className="font-medium text-sm">{reply.author}</span>
+                                {reply.isVerified && (
+                                  <div className="w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center">
+                                    <span className="text-white text-xs">✓</span>
+                                  </div>
+                                )}
+                                <span className="text-xs text-muted-foreground">{reply.timestamp}</span>
+                              </div>
+                              <p className="text-sm mb-2">{reply.content}</p>
+                              
+                              {/* Reply vote buttons */}
+                              <div className="flex items-center space-x-3">
+                                <button
+                                  onClick={() => handleReplyVote(message.id, reply.id, 'upvote')}
+                                  className={`flex items-center space-x-1 ${
+                                    reply.upvotes.includes(DEMO_USER.id)
+                                      ? 'text-green-500'
+                                      : 'text-gray-500 hover:text-green-500'
+                                  }`}
+                                >
+                                  <ChevronUp className="h-3 w-3" />
+                                  <span className="text-xs">{reply.upvotes.length}</span>
+                                </button>
+                                <button
+                                  onClick={() => handleReplyVote(message.id, reply.id, 'downvote')}
+                                  className={`flex items-center space-x-1 ${
+                                    reply.downvotes.includes(DEMO_USER.id)
+                                      ? 'text-red-500'
+                                      : 'text-gray-500 hover:text-red-500'
+                                  }`}
+                                >
+                                  <ChevronDown className="h-3 w-3" />
+                                  <span className="text-xs">{reply.downvotes.length}</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Message Input */}
-      <div className="bg-card border-t border-border p-4 flex-shrink-0">
-        <div className="space-y-2">
-          <div className="flex items-end space-x-2">
-            <div className="flex-1 relative">
-              <Textarea
-                placeholder={`Message ${community.name}...`}
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value.slice(0, maxCharacters))}
-                onKeyPress={handleKeyPress}
-                className="min-h-[50px] max-h-24 resize-none bg-input border-border text-sm pr-10"
-                rows={2}
-              />
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleEmojiClick}
-                className="absolute right-2 top-2 p-1 h-6 w-6"
-              >
-                <Smile className="w-4 h-4" />
-              </Button>
-              <div className="flex items-center justify-between mt-1">
-                <span
-                  className={`text-xs ${newMessage.length > maxCharacters * 0.9 ? "text-destructive" : "text-muted-foreground"}`}
-                >
-                  {newMessage.length}/{maxCharacters}
-                </span>
-              </div>
-            </div>
-
-            <Button
-              onClick={handleSendMessage}
-              disabled={!newMessage.trim() || newMessage.length > maxCharacters}
-              size="sm"
-              className="h-[50px] px-4"
-            >
-              <Send className="w-4 h-4" />
-            </Button>
+      <div className="p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex items-end space-x-2">
+          <div className="flex-1">
+            <Textarea
+              placeholder="Share your thoughts..."
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              className="resize-none"
+              rows={1}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  handleSendMessage()
+                }
+              }}
+            />
           </div>
+          <Button
+            onClick={handleSendMessage}
+            disabled={!newMessage.trim()}
+            size="icon"
+            className="shrink-0"
+          >
+            <Send className="h-4 w-4" />
+          </Button>
         </div>
       </div>
-
-      {/* Report Modal */}
-      {showReportModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-sm">
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-foreground mb-3">Report Message</h3>
-              <p className="text-sm text-muted-foreground mb-4">Why are you reporting this message?</p>
-              <div className="space-y-2">
-                {["Spam", "Scam", "Harmful Content", "Harassment", "Misinformation", "Other"].map((reason) => (
-                  <Button
-                    key={reason}
-                    variant="outline"
-                    className="w-full justify-start bg-transparent"
-                    onClick={() => handleReportMessage(showReportModal, reason)}
-                  >
-                    {reason}
-                  </Button>
-                ))}
-              </div>
-              <Button variant="ghost" className="w-full mt-3" onClick={() => setShowReportModal(null)}>
-                Cancel
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
     </div>
   )
 }
