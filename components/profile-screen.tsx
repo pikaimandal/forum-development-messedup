@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { ChevronLeft } from "lucide-react"
 
 interface ProfileScreenProps {
   onLogout: () => void
@@ -83,40 +84,40 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
 
   const renderEditProfile = () => (
     <div className="h-full bg-background flex flex-col">
-      <div className="bg-card border-b border-border px-4 py-3 flex-shrink-0">
+      <div className="px-4 py-3 flex-shrink-0 border-b border-border">
         <div className="flex items-center space-x-3">
-          <Button variant="ghost" size="sm" onClick={() => setCurrentView("main")}>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
+          <Button variant="ghost" size="sm" onClick={() => setCurrentView("main")} className="p-2">
+            <ChevronLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-xl font-bold text-foreground">Edit Profile</h1>
+          <h1 className="text-lg font-semibold text-foreground">Edit Profile</h1>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4">
         <Card>
-          <CardContent className="p-6 space-y-4">
-            <div className="flex items-center space-x-4 mb-6">
-              <Avatar className="w-20 h-20">
+          <CardContent className="p-4 space-y-4">
+            <div className="flex items-center space-x-4 mb-4">
+              <Avatar className="w-16 h-16">
                 <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.displayName} />
                 <AvatarFallback className="text-lg">{currentUser.displayName[0]}</AvatarFallback>
               </Avatar>
-              <Button variant="outline">Change Photo</Button>
+              <Button variant="outline" size="sm">
+                Change Photo
+              </Button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div>
                 <label className="text-sm font-medium text-foreground">Display Name</label>
-                <Input defaultValue={currentUser.displayName} />
+                <Input defaultValue={currentUser.displayName} className="mt-1" />
               </div>
               <div>
                 <label className="text-sm font-medium text-foreground">Username</label>
-                <Input defaultValue={currentUser.username} />
+                <Input defaultValue={currentUser.username} className="mt-1" />
               </div>
               <div>
                 <label className="text-sm font-medium text-foreground">Bio</label>
-                <Textarea defaultValue={currentUser.bio} rows={3} />
+                <Textarea defaultValue={currentUser.bio} rows={3} className="mt-1" />
               </div>
             </div>
 
@@ -134,14 +135,12 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
 
   const renderPrivacySecurity = () => (
     <div className="h-full bg-background flex flex-col">
-      <div className="bg-card border-b border-border px-4 py-3 flex-shrink-0">
+      <div className="px-4 py-3 flex-shrink-0 border-b border-border">
         <div className="flex items-center space-x-3">
-          <Button variant="ghost" size="sm" onClick={() => setCurrentView("main")}>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
+          <Button variant="ghost" size="sm" onClick={() => setCurrentView("main")} className="p-2">
+            <ChevronLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-xl font-bold text-foreground">Privacy & Security</h1>
+          <h1 className="text-lg font-semibold text-foreground">Privacy & Security</h1>
         </div>
       </div>
 
@@ -204,14 +203,12 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
 
   const renderMyActivity = () => (
     <div className="h-full bg-background flex flex-col">
-      <div className="bg-card border-b border-border px-4 py-3 flex-shrink-0">
+      <div className="px-4 py-3 flex-shrink-0 border-b border-border">
         <div className="flex items-center space-x-3">
-          <Button variant="ghost" size="sm" onClick={() => setCurrentView("main")}>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
+          <Button variant="ghost" size="sm" onClick={() => setCurrentView("main")} className="p-2">
+            <ChevronLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-xl font-bold text-foreground">My Activity</h1>
+          <h1 className="text-lg font-semibold text-foreground">My Activity</h1>
         </div>
       </div>
 
@@ -261,14 +258,12 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
 
   const renderHelpSupport = () => (
     <div className="h-full bg-background flex flex-col">
-      <div className="bg-card border-b border-border px-4 py-3 flex-shrink-0">
+      <div className="px-4 py-3 flex-shrink-0 border-b border-border">
         <div className="flex items-center space-x-3">
-          <Button variant="ghost" size="sm" onClick={() => setCurrentView("main")}>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
+          <Button variant="ghost" size="sm" onClick={() => setCurrentView("main")} className="p-2">
+            <ChevronLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-xl font-bold text-foreground">Help & Support</h1>
+          <h1 className="text-lg font-semibold text-foreground">Help & Support</h1>
         </div>
       </div>
 
@@ -315,7 +310,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
               Live Chat
@@ -328,14 +323,12 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
 
   const renderTermsPrivacy = () => (
     <div className="h-full bg-background flex flex-col">
-      <div className="bg-card border-b border-border px-4 py-3 flex-shrink-0">
+      <div className="px-4 py-3 flex-shrink-0 border-b border-border">
         <div className="flex items-center space-x-3">
-          <Button variant="ghost" size="sm" onClick={() => setCurrentView("main")}>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
+          <Button variant="ghost" size="sm" onClick={() => setCurrentView("main")} className="p-2">
+            <ChevronLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-xl font-bold text-foreground">Terms & Privacy</h1>
+          <h1 className="text-lg font-semibold text-foreground">Terms & Privacy</h1>
         </div>
       </div>
 
@@ -375,26 +368,22 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
 
   const renderMainProfile = () => (
     <div className="h-full bg-background flex flex-col">
-      <div className="bg-card border-b border-border px-4 py-3 flex-shrink-0">
-        <h1 className="text-xl font-bold text-foreground">Profile</h1>
-      </div>
-
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto pt-4">
         {/* User Profile Card */}
-        <Card className="m-4 mb-6">
-          <CardContent className="p-6">
-            <div className="flex items-start space-x-4 mb-4">
-              <Avatar className="w-20 h-20">
+        <Card className="mx-4 mb-4">
+          <CardContent className="p-4">
+            <div className="flex items-start space-x-3 mb-3">
+              <Avatar className="w-16 h-16">
                 <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.displayName} />
                 <AvatarFallback className="text-lg">{currentUser.displayName[0]}</AvatarFallback>
               </Avatar>
 
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-1">
-                  <h2 className="text-xl font-bold text-foreground">{currentUser.displayName}</h2>
+                  <h2 className="text-lg font-bold text-foreground">{currentUser.displayName}</h2>
                   {currentUser.isVerified && (
-                    <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                      <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path
                           fillRule="evenodd"
                           d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -404,53 +393,53 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
                     </div>
                   )}
                 </div>
-                <p className="text-muted-foreground mb-2">{currentUser.username}</p>
-                <Badge variant="secondary" className="mb-3">
+                <p className="text-muted-foreground text-sm mb-2">{currentUser.username}</p>
+                <Badge variant="secondary" className="text-xs">
                   Human Verified • {currentUser.verificationDate}
                 </Badge>
               </div>
             </div>
 
-            <p className="text-foreground mb-4">{currentUser.bio}</p>
+            <p className="text-foreground text-sm mb-3">{currentUser.bio}</p>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-foreground">{currentUser.stats.posts}</div>
-                <div className="text-sm text-muted-foreground">Posts</div>
+            <div className="grid grid-cols-4 gap-3 text-center">
+              <div>
+                <div className="text-lg font-bold text-foreground">{currentUser.stats.posts}</div>
+                <div className="text-xs text-muted-foreground">Posts</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-foreground">{currentUser.stats.comments}</div>
-                <div className="text-sm text-muted-foreground">Comments</div>
+              <div>
+                <div className="text-lg font-bold text-foreground">{currentUser.stats.comments}</div>
+                <div className="text-xs text-muted-foreground">Comments</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-foreground">{currentUser.stats.upvotes}</div>
-                <div className="text-sm text-muted-foreground">Upvotes</div>
+              <div>
+                <div className="text-lg font-bold text-foreground">{currentUser.stats.upvotes}</div>
+                <div className="text-xs text-muted-foreground">Upvotes</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-foreground">{currentUser.stats.communities}</div>
-                <div className="text-sm text-muted-foreground">Communities</div>
+              <div>
+                <div className="text-lg font-bold text-foreground">{currentUser.stats.communities}</div>
+                <div className="text-xs text-muted-foreground">Communities</div>
               </div>
             </div>
 
-            <Separator className="my-4" />
+            <Separator className="my-3" />
 
             <div className="text-center">
-              <p className="text-sm text-muted-foreground">Member since {currentUser.stats.joinDate}</p>
+              <p className="text-xs text-muted-foreground">Member since {currentUser.stats.joinDate}</p>
             </div>
           </CardContent>
         </Card>
 
         {/* Settings */}
-        <Card className="mx-4 mb-6">
+        <Card className="mx-4 mb-4">
           <CardHeader>
             <CardTitle className="text-lg">Settings</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="p-4 space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-medium text-foreground">Dark Mode</h3>
-                <p className="text-sm text-muted-foreground">Switch between light and dark themes</p>
+                <h3 className="font-medium text-foreground text-sm">Dark Mode</h3>
+                <p className="text-xs text-muted-foreground">Switch between light and dark themes</p>
               </div>
               <Switch checked={darkMode} onCheckedChange={handleDarkModeToggle} />
             </div>
@@ -459,31 +448,21 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
 
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-medium text-foreground">Push Notifications</h3>
-                <p className="text-sm text-muted-foreground">Receive notifications for replies and mentions</p>
+                <h3 className="font-medium text-foreground text-sm">Push Notifications</h3>
+                <p className="text-xs text-muted-foreground">Receive notifications for replies</p>
               </div>
               <Switch checked={notifications} onCheckedChange={setNotifications} />
-            </div>
-
-            <Separator />
-
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium text-foreground">Public Profile</h3>
-                <p className="text-sm text-muted-foreground">Allow others to view your profile</p>
-              </div>
-              <Switch checked={publicProfile} onCheckedChange={setPublicProfile} />
             </div>
           </CardContent>
         </Card>
 
         {/* Menu Items */}
-        <Card className="mx-4 mb-6">
+        <Card className="mx-4 mb-4">
           <CardContent className="p-0">
             {menuItems.map((item, index) => (
               <div key={index}>
                 <button
-                  className="w-full flex items-center space-x-4 p-4 hover:bg-muted/50 transition-colors"
+                  className="w-full flex items-center space-x-3 p-4 hover:bg-muted/50 transition-colors active:bg-muted"
                   onClick={() => {
                     switch (item.title) {
                       case "Edit Profile":
@@ -506,59 +485,16 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
                 >
                   <div className="text-muted-foreground">{item.icon}</div>
                   <div className="flex-1 text-left">
-                    <h3 className="font-medium text-foreground">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground">{item.subtitle}</p>
+                    <h3 className="font-medium text-foreground text-sm">{item.title}</h3>
+                    <p className="text-xs text-muted-foreground">{item.subtitle}</p>
                   </div>
-                  <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
                 {index < menuItems.length - 1 && <Separator />}
               </div>
             ))}
-          </CardContent>
-        </Card>
-
-        {/* Verification Status */}
-        <Card className="mx-4 mb-6">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center space-x-2">
-              <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <span>Human Verification</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-foreground">Status</span>
-                <Badge variant="default" className="bg-green-500">
-                  Verified
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-foreground">Verified Since</span>
-                <span className="text-sm text-muted-foreground">{currentUser.verificationDate}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-foreground">World ID</span>
-                <span className="text-sm text-muted-foreground">Connected</span>
-              </div>
-            </div>
-
-            <Separator className="my-4" />
-
-            <p className="text-sm text-muted-foreground">
-              Your human verification allows you to participate in World Forum discussions and proves you're a unique
-              human user.
-            </p>
           </CardContent>
         </Card>
 

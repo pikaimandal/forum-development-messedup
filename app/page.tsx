@@ -4,18 +4,18 @@ import { useState, useEffect } from "react"
 import { SplashScreen } from "@/components/splash-screen"
 import { LoginScreen } from "@/components/login-screen"
 import { MainApp } from "@/components/main-app"
-
-export type Screen = "splash" | "login" | "main"
+import type { Screen } from "@/types"
+import { APP_CONFIG } from "@/lib/constants"
 
 export default function WorldForumApp() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("splash")
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    // Show splash screen for 3 seconds
+    // Show splash screen for configured duration
     const timer = setTimeout(() => {
       setCurrentScreen("login")
-    }, 3000)
+    }, APP_CONFIG.splashDuration)
 
     return () => clearTimeout(timer)
   }, [])

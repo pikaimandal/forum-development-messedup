@@ -106,49 +106,38 @@ export function DiscoverScreen({ onNavigateToCommunity }: DiscoverScreenProps) {
   return (
     <div className="h-full bg-background flex flex-col">
       {/* Header */}
-      <div className="bg-card border-b border-border px-6 py-4 flex-shrink-0">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Discover</h1>
-            <p className="text-sm text-muted-foreground mt-1">Find trending topics and new communities</p>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span className="text-sm font-medium text-muted-foreground">Human Verified</span>
-          </div>
-        </div>
-
+      <div className="px-4 pt-6 pb-4 flex-shrink-0">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Search topics, communities..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-input border-border"
+            className="pl-10 bg-input border-border rounded-full h-10"
           />
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-8">
+      <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-6">
         {/* Trending Topics */}
         <section>
-          <div className="flex items-center space-x-2 mb-4">
-            <TrendingUp className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-bold text-foreground">Trending Topics</h2>
+          <div className="flex items-center space-x-2 mb-3">
+            <TrendingUp className="w-4 h-4 text-primary" />
+            <h2 className="text-lg font-bold text-foreground">Trending</h2>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {trendingTopics.map((topic, index) => (
               <Card
                 key={topic.id}
-                className="cursor-pointer hover:shadow-lg transition-all duration-200 border-border bg-card hover:bg-card/80"
+                className="cursor-pointer hover:bg-muted/50 transition-all duration-200 border-border bg-card active:scale-95"
                 onClick={() => onNavigateToCommunity(topic.communityId)}
               >
-                <CardContent className="p-4">
+                <CardContent className="p-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <span className="text-lg font-bold text-primary">#{index + 1}</span>
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className="text-sm font-bold text-primary">#{index + 1}</span>
                         <Badge variant="secondary" className="text-xs">
                           {topic.community}
                         </Badge>
@@ -157,10 +146,10 @@ export function DiscoverScreen({ onNavigateToCommunity }: DiscoverScreenProps) {
                           <span className="text-xs">{topic.timeframe}</span>
                         </div>
                       </div>
-                      <h3 className="font-semibold text-foreground mb-2">{topic.title}</h3>
+                      <h3 className="font-medium text-foreground text-sm mb-1">{topic.title}</h3>
                       <div className="flex items-center space-x-1 text-muted-foreground">
-                        <TrendingUp className="w-4 h-4" />
-                        <span className="text-sm">{topic.engagement} interactions</span>
+                        <TrendingUp className="w-3 h-3" />
+                        <span className="text-xs">{topic.engagement} interactions</span>
                       </div>
                     </div>
                   </div>
@@ -172,36 +161,33 @@ export function DiscoverScreen({ onNavigateToCommunity }: DiscoverScreenProps) {
 
         {/* Featured Communities */}
         <section>
-          <div className="flex items-center space-x-2 mb-4">
-            <Star className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-bold text-foreground">Featured Communities</h2>
+          <div className="flex items-center space-x-2 mb-3">
+            <Star className="w-4 h-4 text-primary" />
+            <h2 className="text-lg font-bold text-foreground">Featured</h2>
           </div>
-          <div className="grid gap-4">
+          <div className="space-y-2">
             {featuredCommunities.map((community) => (
               <Card
                 key={community.id}
-                className="cursor-pointer hover:shadow-lg transition-all duration-200 border-border bg-card hover:bg-card/80"
+                className="cursor-pointer hover:bg-muted/50 transition-all duration-200 border-border bg-card active:scale-95"
                 onClick={() => onNavigateToCommunity(community.id)}
               >
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-12 h-12 rounded-xl ${community.color} flex items-center justify-center`}>
-                      <Users className="w-6 h-6 text-white" />
+                <CardContent className="p-3">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-8 h-8 rounded-full ${community.color} flex items-center justify-center`}>
+                      <Users className="w-4 h-4 text-white" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-1">
-                        <h3 className="font-bold text-lg text-foreground">{community.name}</h3>
+                        <h3 className="font-semibold text-sm text-foreground">{community.name}</h3>
                         {community.isNew && (
                           <Badge className="bg-secondary text-secondary-foreground text-xs">New</Badge>
                         )}
-                        <Badge variant="outline" className="text-xs">
-                          {community.category}
-                        </Badge>
                       </div>
-                      <p className="text-muted-foreground text-sm mb-2">{community.description}</p>
+                      <p className="text-muted-foreground text-xs mb-1">{community.description}</p>
                       <div className="flex items-center space-x-1 text-muted-foreground">
-                        <Users className="w-4 h-4" />
-                        <span className="text-sm">{formatNumber(community.members)} members</span>
+                        <Users className="w-3 h-3" />
+                        <span className="text-xs">{formatNumber(community.members)} members</span>
                       </div>
                     </div>
                   </div>
@@ -213,15 +199,15 @@ export function DiscoverScreen({ onNavigateToCommunity }: DiscoverScreenProps) {
 
         {/* Quick Actions */}
         <section>
-          <h2 className="text-lg font-bold text-foreground mb-4">Quick Actions</h2>
+          <h2 className="text-lg font-bold text-foreground mb-3">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" className="h-16 flex-col space-y-1 bg-transparent">
-              <TrendingUp className="w-5 h-5" />
-              <span className="text-xs">View All Trending</span>
+            <Button variant="outline" className="h-12 flex-col space-y-1 bg-transparent">
+              <TrendingUp className="w-4 h-4" />
+              <span className="text-xs">All Trending</span>
             </Button>
-            <Button variant="outline" className="h-16 flex-col space-y-1 bg-transparent">
-              <Users className="w-5 h-5" />
-              <span className="text-xs">Browse Categories</span>
+            <Button variant="outline" className="h-12 flex-col space-y-1 bg-transparent">
+              <Users className="w-4 h-4" />
+              <span className="text-xs">Categories</span>
             </Button>
           </div>
         </section>

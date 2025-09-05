@@ -3,7 +3,9 @@
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Users, MessageCircle, Shield, CheckCircle, UserMinus } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { ArrowLeft, Users, MessageCircle, Shield, CheckCircle, UserMinus, Crown, Clock } from "lucide-react"
 
 interface Community {
   id: string
@@ -169,115 +171,189 @@ export function CommunityDetailScreen({
   return (
     <div className="h-full bg-background flex flex-col">
       {/* Header */}
-      <div className="bg-card border-b border-border px-6 py-4 flex-shrink-0">
-        <div className="flex items-center space-x-4 mb-4">
-          <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
+      <div className="px-4 py-4 flex-shrink-0 bg-background">
+        <div className="flex items-center space-x-3 mb-4">
+          <Button variant="ghost" size="sm" onClick={onBack} className="p-2 hover:bg-muted">
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <div className="flex items-center space-x-3">
-            <div className={`w-10 h-10 rounded-xl ${community.color} flex items-center justify-center`}>
-              <Users className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-foreground">{community.name}</h1>
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <Users className="w-4 h-4" />
-                <span>{formatNumber(community.members)} members</span>
-                {isJoined && (
-                  <>
-                    <span>•</span>
-                    <span className="text-primary font-medium">Joined</span>
-                  </>
-                )}
+          <h1 className="text-lg font-semibold text-foreground">Community</h1>
+        </div>
+
+        <Card className="border-border bg-card">
+          <CardContent className="p-4">
+            <div className="flex items-start space-x-4">
+              <div
+                className={`w-16 h-16 rounded-2xl ${community.color} flex items-center justify-center flex-shrink-0`}
+              >
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-2 mb-2">
+                  <h2 className="text-xl font-bold text-foreground">{community.name}</h2>
+                  {isJoined && (
+                    <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      Joined
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-3">
+                  <div className="flex items-center space-x-1">
+                    <Users className="w-4 h-4" />
+                    <span>{formatNumber(community.members)} members</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span>Active</span>
+                  </div>
+                </div>
+                <p className="text-foreground text-sm leading-relaxed">{community.description}</p>
               </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-2xl mx-auto space-y-6">
-          {/* Community Info */}
-          <Card className="border-border bg-card">
-            <CardContent className="p-6">
-              <h2 className="text-lg font-bold text-foreground mb-3">About this community</h2>
-              <p className="text-muted-foreground leading-relaxed">{community.description}</p>
-            </CardContent>
-          </Card>
-
-          {/* Join/Enter/Leave Buttons */}
-          <div className="flex justify-center space-x-3">
-            {isJoined ? (
-              <>
-                <Button onClick={() => onEnterChat(communityId)} size="lg" className="flex-1 max-w-sm">
-                  <MessageCircle className="w-5 h-5 mr-2" />
-                  Enter Chat Room
-                </Button>
-                <Button
-                  onClick={handleLeave}
-                  disabled={isLeaving}
-                  variant="outline"
-                  size="lg"
-                  className="px-6 bg-transparent"
-                >
-                  {isLeaving ? (
-                    <div className="w-5 h-5 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
-                  ) : (
-                    <UserMinus className="w-5 h-5" />
-                  )}
-                </Button>
-              </>
-            ) : (
-              <Button onClick={handleJoin} disabled={isJoining} size="lg" className="w-full max-w-sm">
-                {isJoining ? (
-                  <>
-                    <div className="w-5 h-5 mr-2 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-                    Joining...
-                  </>
+      <div className="flex-1 overflow-y-auto px-4 pb-4">
+        <div className="space-y-4">
+          {isJoined ? (
+            <div className="flex space-x-3">
+              <Button onClick={() => onEnterChat(communityId)} size="default" className="flex-1 h-12">
+                <MessageCircle className="w-5 h-5 mr-2" />
+                Enter Chat Room
+              </Button>
+              <Button
+                onClick={handleLeave}
+                disabled={isLeaving}
+                variant="outline"
+                size="default"
+                className="px-4 h-12 bg-transparent border-destructive/20 text-destructive hover:bg-destructive/10"
+              >
+                {isLeaving ? (
+                  <div className="w-5 h-5 animate-spin rounded-full border-2 border-destructive border-t-transparent" />
                 ) : (
-                  <>
-                    <CheckCircle className="w-5 h-5 mr-2" />
-                    Join Community
-                  </>
+                  <UserMinus className="w-5 h-5" />
                 )}
               </Button>
-            )}
-          </div>
+            </div>
+          ) : (
+            <Button onClick={handleJoin} disabled={isJoining} size="default" className="w-full h-12">
+              {isJoining ? (
+                <>
+                  <div className="w-5 h-5 mr-2 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                  Joining Community...
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="w-5 h-5 mr-2" />
+                  Join Community
+                </>
+              )}
+            </Button>
+          )}
 
-          {/* Community Rules */}
           <Card className="border-border bg-card">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-2 mb-4">
-                <Shield className="w-5 h-5 text-primary" />
-                <h2 className="text-lg font-bold text-foreground">Community Rules</h2>
+            <CardContent className="p-4">
+              <h3 className="font-semibold text-foreground mb-3">Community Stats</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-foreground">{formatNumber(community.members)}</div>
+                  <div className="text-xs text-muted-foreground">Total Members</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-foreground">24/7</div>
+                  <div className="text-xs text-muted-foreground">Always Active</div>
+                </div>
               </div>
-              <ul className="space-y-3">
-                {community.rules.map((rule, index) => (
-                  <li key={index} className="flex items-start space-x-3">
-                    <span className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-sm font-medium">
-                      {index + 1}
-                    </span>
-                    <span className="text-muted-foreground leading-relaxed">{rule}</span>
-                  </li>
-                ))}
-              </ul>
             </CardContent>
           </Card>
 
-          {/* Moderators */}
           <Card className="border-border bg-card">
-            <CardContent className="p-6">
-              <h2 className="text-lg font-bold text-foreground mb-4">Moderators</h2>
-              <div className="flex flex-wrap gap-2">
-                {community.moderators.map((moderator) => (
-                  <div key={moderator} className="flex items-center space-x-2 bg-muted px-3 py-2 rounded-lg">
-                    <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                      <Shield className="w-3 h-3 text-primary-foreground" />
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                  <Shield className="w-4 h-4 text-primary" />
+                </div>
+                <h3 className="font-semibold text-foreground">Community Guidelines</h3>
+              </div>
+              <div className="space-y-3">
+                {community.rules.map((rule, index) => (
+                  <div key={index} className="flex items-start space-x-3 p-3 bg-muted/30 rounded-lg">
+                    <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-primary-foreground text-xs font-bold">{index + 1}</span>
                     </div>
-                    <span className="text-sm font-medium text-foreground">{moderator}</span>
+                    <p className="text-foreground text-sm leading-relaxed">{rule}</p>
                   </div>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border bg-card">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-8 h-8 bg-amber-500/10 rounded-full flex items-center justify-center">
+                  <Crown className="w-4 h-4 text-amber-600" />
+                </div>
+                <h3 className="font-semibold text-foreground">Community Moderators</h3>
+              </div>
+              <div className="space-y-2">
+                {community.moderators.map((moderator, index) => (
+                  <div key={moderator} className="flex items-center space-x-3 p-3 bg-muted/30 rounded-lg">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center">
+                      <Crown className="w-4 h-4 text-primary-foreground" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-medium text-foreground">{moderator}</span>
+                        <Badge variant="outline" className="text-xs bg-amber-500/10 text-amber-700 border-amber-500/20">
+                          Moderator
+                        </Badge>
+                      </div>
+                      <div className="flex items-center space-x-1 text-xs text-muted-foreground mt-1">
+                        <Clock className="w-3 h-3" />
+                        <span>Active now</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border bg-card">
+            <CardContent className="p-4">
+              <h3 className="font-semibold text-foreground mb-3">About This Community</h3>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Created</span>
+                  <span className="text-foreground font-medium">January 2024</span>
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Category</span>
+                  <Badge variant="secondary" className="bg-muted text-foreground">
+                    {community.id === "developer"
+                      ? "Technology"
+                      : community.id === "world-news"
+                        ? "News"
+                        : community.id === "ai-tech"
+                          ? "Technology"
+                          : community.id === "qa"
+                            ? "Help & Support"
+                            : community.id === "announcements"
+                              ? "Official"
+                              : "General"}
+                  </Badge>
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Verification Required</span>
+                  <div className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-foreground font-medium">Human Verified</span>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

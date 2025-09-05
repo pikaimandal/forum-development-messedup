@@ -3,11 +3,12 @@
 import { useState } from "react"
 import { CommunitiesScreen } from "@/components/communities-screen"
 import { CommunityDetailScreen } from "@/components/community-detail-screen"
+import { ChatScreen } from "@/components/chat-screen"
 import { DiscoverScreen } from "@/components/discover-screen"
 import { ProfileScreen } from "@/components/profile-screen"
 import { BottomNavigation } from "@/components/bottom-navigation"
-
-export type MainScreen = "communities" | "community-detail" | "discover" | "profile"
+import type { MainScreen } from "@/types"
+import { DEFAULT_JOINED_COMMUNITIES } from "@/lib/constants"
 
 interface MainAppProps {
   onLogout: () => void
@@ -16,9 +17,7 @@ interface MainAppProps {
 export function MainApp({ onLogout }: MainAppProps) {
   const [currentScreen, setCurrentScreen] = useState<MainScreen>("communities")
   const [selectedCommunityId, setSelectedCommunityId] = useState<string>("")
-  const [joinedCommunities, setJoinedCommunities] = useState<Set<string>>(
-    new Set(["global-chat", "world-news", "qa", "announcements"]),
-  )
+  const [joinedCommunities, setJoinedCommunities] = useState<Set<string>>(new Set(DEFAULT_JOINED_COMMUNITIES))
 
   const handleNavigateToCommunity = (communityId: string) => {
     setSelectedCommunityId(communityId)
@@ -39,8 +38,7 @@ export function MainApp({ onLogout }: MainAppProps) {
 
   const handleEnterChat = (communityId: string) => {
     setSelectedCommunityId(communityId)
-    setCurrentScreen("community-detail") // Navigate back to community detail, then to chat
-    // In a real app, you might want to add a separate chat state
+    setCurrentScreen("chat")
   }
 
   const renderScreen = () => {
@@ -56,13 +54,12 @@ export function MainApp({ onLogout }: MainAppProps) {
             onBack={() => setCurrentScreen("communities")}
             onJoinCommunity={handleJoinCommunity}
             onLeaveCommunity={handleLeaveCommunity}
-            onEnterChat={(communityId) => {
-              setSelectedCommunityId(communityId)
-              // Chat is now accessed through community detail page
-            }}
+            onEnterChat={handleEnterChat}
             isJoined={joinedCommunities.has(selectedCommunityId)}
           />
         )
+      case "chat":
+        return <ChatScreen communityId={selectedCommunityId} onBack={() => setCurrentScreen("community-detail")} />
       case "discover":
         return <DiscoverScreen onNavigateToCommunity={handleNavigateToCommunity} />
       case "profile":

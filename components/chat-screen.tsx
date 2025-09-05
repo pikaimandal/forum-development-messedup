@@ -241,24 +241,24 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Header */}
-      <div className="bg-card border-b border-border px-6 py-4 flex-shrink-0">
-        <div className="flex items-center space-x-4">
+      <div className="px-4 py-3 flex-shrink-0 border-b border-border">
+        <div className="flex items-center space-x-3">
           <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
             <ArrowLeft className="w-5 h-5" />
           </Button>
 
           <div className="flex items-center space-x-3 flex-1">
-            <div className={`w-10 h-10 rounded-xl ${community.color} flex items-center justify-center`}>
-              <Users className="w-5 h-5 text-white" />
+            <div className={`w-8 h-8 rounded-full ${community.color} flex items-center justify-center`}>
+              <Users className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-foreground">{community.name}</h1>
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <Users className="w-4 h-4" />
+              <h1 className="text-base font-semibold text-foreground">{community.name}</h1>
+              <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                <Users className="w-3 h-3" />
                 <span>{formatNumber(community.members)} members</span>
                 <span>•</span>
                 <div className="flex items-center space-x-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full flex items-center justify-center"></div>
                   <span>Human Verified</span>
                 </div>
               </div>
@@ -268,30 +268,30 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 ? (
           <div className="text-center py-12">
-            <div className={`w-16 h-16 rounded-2xl ${community.color} flex items-center justify-center mx-auto mb-4`}>
-              <Users className="w-8 h-8 text-white" />
+            <div className={`w-12 h-12 rounded-xl ${community.color} flex items-center justify-center mx-auto mb-3`}>
+              <Users className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-lg font-bold text-foreground mb-2">Welcome to {community.name}!</h3>
-            <p className="text-muted-foreground mb-4">Start the conversation by sending the first message.</p>
+            <h3 className="text-base font-semibold text-foreground mb-2">Welcome to {community.name}!</h3>
+            <p className="text-muted-foreground text-sm mb-4">Start the conversation by sending the first message.</p>
           </div>
         ) : (
           messages.map((message) => (
             <Card key={message.id} className="border-border bg-card">
-              <CardContent className="p-4">
+              <CardContent className="p-3">
                 <div className="flex items-start space-x-3">
-                  <Avatar className="w-10 h-10 flex-shrink-0">
+                  <Avatar className="w-8 h-8 flex-shrink-0">
                     <AvatarImage src={message.authorAvatar || "/placeholder.svg"} alt={message.author} />
                     <AvatarFallback>{message.author[0]}</AvatarFallback>
                   </Avatar>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <span className="font-semibold text-foreground">{message.author}</span>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="font-medium text-foreground text-sm">{message.author}</span>
                       {message.isVerified && (
-                        <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                        <div className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
                           <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path
                               fillRule="evenodd"
@@ -301,9 +301,9 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                           </svg>
                         </div>
                       )}
-                      <span className="text-sm text-muted-foreground">{formatTimestamp(message.timestamp)}</span>
+                      <span className="text-xs text-muted-foreground">{formatTimestamp(message.timestamp)}</span>
                     </div>
-                    <p className="text-foreground leading-relaxed break-words">{message.content}</p>
+                    <p className="text-foreground text-sm leading-relaxed break-words">{message.content}</p>
                   </div>
                 </div>
               </CardContent>
@@ -313,19 +313,19 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
       </div>
 
       {/* Message Input */}
-      <div className="bg-card border-t border-border p-6 flex-shrink-0">
-        <div className="space-y-3">
-          <div className="flex items-end space-x-3">
+      <div className="bg-card border-t border-border p-4 flex-shrink-0">
+        <div className="space-y-2">
+          <div className="flex items-end space-x-2">
             <div className="flex-1">
               <Textarea
                 placeholder={`Message ${community.name}...`}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value.slice(0, maxCharacters))}
                 onKeyPress={handleKeyPress}
-                className="min-h-[60px] max-h-32 resize-none bg-input border-border"
+                className="min-h-[50px] max-h-24 resize-none bg-input border-border text-sm"
                 rows={2}
               />
-              <div className="flex items-center justify-between mt-2">
+              <div className="flex items-center justify-between mt-1">
                 <span
                   className={`text-xs ${newMessage.length > maxCharacters * 0.9 ? "text-destructive" : "text-muted-foreground"}`}
                 >
@@ -334,16 +334,16 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1">
               <Button variant="ghost" size="sm" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="p-2">
-                <Smile className="w-5 h-5" />
+                <Smile className="w-4 h-4" />
               </Button>
 
               <Button
                 onClick={handleSendMessage}
                 disabled={!newMessage.trim() || newMessage.length > maxCharacters}
                 size="sm"
-                className="px-4"
+                className="px-3"
               >
                 <Send className="w-4 h-4" />
               </Button>
