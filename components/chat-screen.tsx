@@ -2,12 +2,13 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ArrowLeft, Users, Smile, Send } from "lucide-react"
+import { EmojiPicker } from "@/components/emoji-picker"
 
 interface ChatScreenProps {
   onBack: () => void
@@ -158,9 +159,28 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   const [messages, setMessages] = useState<Message[]>(demoMessages[communityId] || [])
   const [newMessage, setNewMessage] = useState("")
   const [showReportModal, setShowReportModal] = useState<string | null>(null)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const emojiPickerRef = useRef<HTMLDivElement>(null)
 
   const community = communityData[communityId]
   const maxCharacters = 500
+
+  // Close emoji picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+        setShowEmojiPicker(false)
+      }
+    }
+
+    if (showEmojiPicker) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showEmojiPicker])
 
   if (!community) {
     return (
@@ -218,11 +238,12 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   }
 
   const handleEmojiClick = () => {
-    // Focus on the textarea to trigger mobile keyboard with emoji access
-    const textarea = document.querySelector('textarea[placeholder*="Message"]') as HTMLTextAreaElement
-    if (textarea) {
-      textarea.focus()
-    }
+    setShowEmojiPicker(!showEmojiPicker)
+  }
+
+  const handleEmojiSelect = (emoji: string) => {
+    setNewMessage(prev => prev + emoji)
+    setShowEmojiPicker(false)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -308,6 +329,13 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
           ))
         )}
       </div>
+
+      {/* Emoji Picker */}
+      {showEmojiPicker && (
+        <div ref={emojiPickerRef} className="bg-card border-t border-border p-4 flex-shrink-0">
+          <EmojiPicker onEmojiSelect={handleEmojiSelect} />
+        </div>
+      )}
 
       {/* Message Input */}
       <div className="bg-card border-t border-border p-4 flex-shrink-0">
