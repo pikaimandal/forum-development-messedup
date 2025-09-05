@@ -316,7 +316,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                         </svg>
                       </Button>
                     </div>
-                    <p className="text-foreground text-sm leading-relaxed break-words">{message.content}</p>
+                    <p className="text-foreground text-sm leading-relaxed break-words whitespace-pre-wrap">{message.content}</p>
                   </div>
                 </div>
               </CardContent>
