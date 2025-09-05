@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { EmojiPicker } from "@/components/emoji-picker"
 import { ArrowLeft, Users, Smile, Send } from "lucide-react"
 
 interface ChatScreenProps {
@@ -21,7 +20,6 @@ interface Message {
   authorAvatar: string
   content: string
   timestamp: string
-  isVerified: boolean
 }
 
 interface Community {
@@ -76,91 +74,82 @@ const demoMessages: Record<string, Message[]> = {
   "global-chat": [
     {
       id: "1",
-      author: "CommunityMod",
+      author: "@CommunityMod",
       authorAvatar: "/worldcoin-team.png",
       content:
         "Welcome to Global Chat! This is where verified humans connect and share ideas. Feel free to introduce yourself! 👋",
       timestamp: "2h",
-      isVerified: true,
     },
     {
       id: "2",
-      author: "NewMember",
+      author: "@NewMember",
       authorAvatar: "/diverse-user-avatars.png",
       content: "Hi everyone! Just joined World Forum and excited to be part of this human-verified community! 🎉",
       timestamp: "1h",
-      isVerified: true,
     },
     {
       id: "3",
-      author: "ActiveUser",
+      author: "@ActiveUser",
       authorAvatar: "/user-profile-avatar.png",
       content: "Great to have you here! The community is growing fast and the discussions are always interesting 😊",
       timestamp: "45m",
-      isVerified: true,
     },
   ],
   developer: [
     {
       id: "1",
-      author: "DevLead",
+      author: "@DevLead",
       authorAvatar: "/developer-coding.png",
       content: "Anyone working with the latest World ID SDK? I'm having some integration questions 🤔",
       timestamp: "3h",
-      isVerified: true,
     },
     {
       id: "2",
-      author: "FullStackDev",
+      author: "@FullStackDev",
       authorAvatar: "/developer-working.png",
       content:
         "Just implemented it last week! The new documentation is really helpful. What specific issues are you facing?",
       timestamp: "2h",
-      isVerified: true,
     },
   ],
   "world-news": [
     {
       id: "1",
-      author: "NewsEditor",
+      author: "@NewsEditor",
       authorAvatar: "/worldcoin-team.png",
       content:
         "Digital identity adoption is accelerating globally. Several countries are now exploring similar verification systems 🌍",
       timestamp: "4h",
-      isVerified: true,
     },
   ],
   "ai-tech": [
     {
       id: "1",
-      author: "AIResearcher",
+      author: "@AIResearcher",
       authorAvatar: "/tech-enthusiast.png",
       content:
         "The intersection of AI and human verification is fascinating. Biometric tech is advancing so rapidly! 🤖",
       timestamp: "5h",
-      isVerified: true,
     },
   ],
   qa: [
     {
       id: "1",
-      author: "HelpModerator",
+      author: "@HelpModerator",
       authorAvatar: "/diverse-user-avatars.png",
       content:
         "This is the Q&A community! Ask any questions about World Forum, World ID, or anything else. We're here to help! ❓",
       timestamp: "6h",
-      isVerified: true,
     },
   ],
   announcements: [
     {
       id: "1",
-      author: "WorldForumTeam",
+      author: "@WorldForumTeam",
       authorAvatar: "/announcement-team.png",
       content:
         "🎉 Welcome to World Forum Beta! We're excited to launch the world's first human-verified forum platform. More features coming soon!",
       timestamp: "1d",
-      isVerified: true,
     },
   ],
 }
@@ -168,7 +157,7 @@ const demoMessages: Record<string, Message[]> = {
 export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenProps) {
   const [messages, setMessages] = useState<Message[]>(demoMessages[communityId] || [])
   const [newMessage, setNewMessage] = useState("")
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [showReportModal, setShowReportModal] = useState<string | null>(null)
 
   const community = communityData[communityId]
   const maxCharacters = 500
@@ -212,23 +201,28 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
 
     const message: Message = {
       id: `msg_${Date.now()}`,
-      author: "You",
+      author: "@You",
       authorAvatar: "/user-profile-avatar.png",
       content: newMessage,
       timestamp: "now",
-      isVerified: true,
     }
 
     setMessages((prev) => [...prev, message])
     setNewMessage("")
-    setShowEmojiPicker(false)
   }
 
-  const handleEmojiSelect = (emoji: string) => {
-    if (newMessage.length + emoji.length <= maxCharacters) {
-      setNewMessage((prev) => prev + emoji)
+  const handleReportMessage = (messageId: string, reason: string) => {
+    console.log(`Reported message ${messageId} for: ${reason}`)
+    setShowReportModal(null)
+    // Here you would typically send the report to your backend
+  }
+
+  const handleEmojiClick = () => {
+    // Focus on the textarea to trigger mobile keyboard with emoji access
+    const textarea = document.querySelector('textarea[placeholder*="Message"]') as HTMLTextAreaElement
+    if (textarea) {
+      textarea.focus()
     }
-    setShowEmojiPicker(false)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -257,10 +251,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                 <Users className="w-3 h-3" />
                 <span>{formatNumber(community.members)} members</span>
                 <span>•</span>
-                <div className="flex items-center space-x-1">
-                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full flex items-center justify-center"></div>
-                  <span>Human Verified</span>
-                </div>
+                <span>ORB Verified</span>
               </div>
             </div>
           </div>
@@ -284,24 +275,30 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                 <div className="flex items-start space-x-3">
                   <Avatar className="w-8 h-8 flex-shrink-0">
                     <AvatarImage src={message.authorAvatar || "/placeholder.svg"} alt={message.author} />
-                    <AvatarFallback>{message.author[0]}</AvatarFallback>
+                    <AvatarFallback>{message.author[1] || message.author[0]}</AvatarFallback>
                   </Avatar>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className="font-medium text-foreground text-sm">{message.author}</span>
-                      {message.isVerified && (
-                        <div className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
-                          <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </div>
-                      )}
-                      <span className="text-xs text-muted-foreground">{formatTimestamp(message.timestamp)}</span>
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-medium text-foreground text-sm">{message.author}</span>
+                        <span className="text-xs text-muted-foreground">{formatTimestamp(message.timestamp)}</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="p-1 h-6 w-6 opacity-60 hover:opacity-100"
+                        onClick={() => setShowReportModal(message.id)}
+                      >
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                          />
+                        </svg>
+                      </Button>
                     </div>
                     <p className="text-foreground text-sm leading-relaxed break-words">{message.content}</p>
                   </div>
@@ -316,15 +313,23 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
       <div className="bg-card border-t border-border p-4 flex-shrink-0">
         <div className="space-y-2">
           <div className="flex items-end space-x-2">
-            <div className="flex-1">
+            <div className="flex-1 relative">
               <Textarea
                 placeholder={`Message ${community.name}...`}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value.slice(0, maxCharacters))}
                 onKeyPress={handleKeyPress}
-                className="min-h-[50px] max-h-24 resize-none bg-input border-border text-sm"
+                className="min-h-[50px] max-h-24 resize-none bg-input border-border text-sm pr-10"
                 rows={2}
               />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleEmojiClick}
+                className="absolute right-2 top-2 p-1 h-6 w-6"
+              >
+                <Smile className="w-4 h-4" />
+              </Button>
               <div className="flex items-center justify-between mt-1">
                 <span
                   className={`text-xs ${newMessage.length > maxCharacters * 0.9 ? "text-destructive" : "text-muted-foreground"}`}
@@ -334,30 +339,44 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
               </div>
             </div>
 
-            <div className="flex items-center space-x-1">
-              <Button variant="ghost" size="sm" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="p-2">
-                <Smile className="w-4 h-4" />
-              </Button>
-
-              <Button
-                onClick={handleSendMessage}
-                disabled={!newMessage.trim() || newMessage.length > maxCharacters}
-                size="sm"
-                className="px-3"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
-            </div>
+            <Button
+              onClick={handleSendMessage}
+              disabled={!newMessage.trim() || newMessage.length > maxCharacters}
+              size="sm"
+              className="h-[50px] px-4"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
           </div>
-
-          {/* Emoji Picker */}
-          {showEmojiPicker && (
-            <div className="border border-border rounded-lg bg-card p-2">
-              <EmojiPicker onEmojiSelect={handleEmojiSelect} />
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Report Modal */}
+      {showReportModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-sm">
+            <CardContent className="p-4">
+              <h3 className="font-semibold text-foreground mb-3">Report Message</h3>
+              <p className="text-sm text-muted-foreground mb-4">Why are you reporting this message?</p>
+              <div className="space-y-2">
+                {["Spam", "Scam", "Harmful Content", "Harassment", "Misinformation", "Other"].map((reason) => (
+                  <Button
+                    key={reason}
+                    variant="outline"
+                    className="w-full justify-start bg-transparent"
+                    onClick={() => handleReportMessage(showReportModal, reason)}
+                  >
+                    {reason}
+                  </Button>
+                ))}
+              </div>
+              <Button variant="ghost" className="w-full mt-3" onClick={() => setShowReportModal(null)}>
+                Cancel
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }

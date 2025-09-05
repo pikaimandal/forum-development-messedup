@@ -40,7 +40,7 @@ const communityData: Record<string, Community> = {
       "Keep discussions constructive and meaningful",
       "Report inappropriate behavior to moderators",
     ],
-    moderators: ["CommunityMod", "GlobalAdmin"],
+    moderators: ["@CommunityMod", "@GlobalAdmin"],
   },
   developer: {
     id: "developer",
@@ -55,7 +55,7 @@ const communityData: Record<string, Community> = {
       "No job postings without prior approval",
       "Keep discussions technical and relevant",
     ],
-    moderators: ["DevLead", "TechModerator"],
+    moderators: ["@DevLead", "@TechModerator"],
   },
   "world-news": {
     id: "world-news",
@@ -70,7 +70,7 @@ const communityData: Record<string, Community> = {
       "No misinformation or conspiracy theories",
       "Fact-check before sharing information",
     ],
-    moderators: ["NewsEditor", "FactChecker"],
+    moderators: ["@NewsEditor", "@FactChecker"],
   },
   "ai-tech": {
     id: "ai-tech",
@@ -85,7 +85,7 @@ const communityData: Record<string, Community> = {
       "No fear-mongering about AI",
       "Support claims with credible sources",
     ],
-    moderators: ["AIResearcher", "TechExpert"],
+    moderators: ["@AIResearcher", "@TechExpert"],
   },
   qa: {
     id: "qa",
@@ -100,7 +100,7 @@ const communityData: Record<string, Community> = {
       "Search before asking duplicate questions",
       "Thank contributors for their help",
     ],
-    moderators: ["KnowledgeKeeper", "HelpModerator"],
+    moderators: ["@KnowledgeKeeper", "@HelpModerator"],
   },
   announcements: {
     id: "announcements",
@@ -115,7 +115,7 @@ const communityData: Record<string, Community> = {
       "Provide feedback constructively",
       "Follow new guidelines promptly",
     ],
-    moderators: ["WorldForumTeam", "CommunityManager"],
+    moderators: ["@WorldForumTeam", "@CommunityManager"],
   },
 }
 
@@ -351,7 +351,7 @@ export function CommunityDetailScreen({
                   <span className="text-muted-foreground">Verification Required</span>
                   <div className="flex items-center space-x-1">
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-foreground font-medium">Human Verified</span>
+                    <span className="text-foreground font-medium">ORB Verified</span>
                   </div>
                 </div>
               </div>
