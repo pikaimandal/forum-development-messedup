@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { CommunitiesScreen } from "@/components/communities-screen"
 import { CommunityDetailScreen } from "@/components/community-detail-screen"
-import { ChatScreen } from "@/components/chat-screen"
+import ChatScreen from "@/components/chat-screen"
 import { DiscoverScreen } from "@/components/discover-screen"
 import { ProfileScreen } from "@/components/profile-screen"
 import { BottomNavigation } from "@/components/bottom-navigation"
