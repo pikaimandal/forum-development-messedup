@@ -246,12 +246,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
     setShowEmojiPicker(false)
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
-    }
-  }
+
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -346,7 +341,6 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                 placeholder={`Message ${community.name}...`}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value.slice(0, maxCharacters))}
-                onKeyPress={handleKeyPress}
                 className="min-h-[50px] max-h-24 resize-none bg-input border-border text-sm pr-10"
                 rows={2}
               />
