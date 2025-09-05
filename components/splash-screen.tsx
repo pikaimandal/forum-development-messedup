@@ -1,26 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
-
 export function SplashScreen() {
-  const [displayText, setDisplayText] = useState("")
-  const fullText = "Forum"
-  const typingSpeed = 150
-
-  useEffect(() => {
-    let index = 0
-    const timer = setInterval(() => {
-      if (index < fullText.length) {
-        setDisplayText(fullText.slice(0, index + 1))
-        index++
-      } else {
-        clearInterval(timer)
-      }
-    }, typingSpeed)
-
-    return () => clearInterval(timer)
-  }, [])
-
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
       {/* App Logo */}
@@ -37,11 +17,10 @@ export function SplashScreen() {
         </div>
       </div>
 
-      {/* Typing Animation */}
+      {/* App Title */}
       <div className="text-center">
         <h1 className="text-4xl font-bold text-foreground mb-2">
-          {displayText}
-          <span className="animate-pulse">|</span>
+          Forum
         </h1>
         <p className="text-muted-foreground text-lg">The world's first human-verified forum</p>
       </div>

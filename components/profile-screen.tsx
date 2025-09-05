@@ -36,9 +36,9 @@ interface UserProfile {
 // Demo user data
 const currentUser: UserProfile = {
   username: "@worldcitizen",
-  displayName: "World Citizen",
+  displayName: "", // Removed for auto-population
   avatar: "/user-profile-avatar.png",
-  bio: "Passionate about human verification and decentralized identity. Building the future of digital trust.",
+  bio: "", // Removed for auto-population
   isVerified: true,
   verificationDate: "January 2024",
   stats: {
@@ -54,21 +54,19 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
   const [darkMode, setDarkMode] = useState(false)
   const [notifications, setNotifications] = useState(true)
   const [publicProfile, setPublicProfile] = useState(true)
-  const [currentView, setCurrentView] = useState<"main" | "edit" | "privacy" | "activity" | "help" | "terms">("main")
+  const [currentView, setCurrentView] = useState<"main" | "privacy" | "activity" | "help" | "terms">("main")
 
   const handleDarkModeToggle = (enabled: boolean) => {
     setDarkMode(enabled)
     document.documentElement.classList.toggle("dark", enabled)
   }
 
-  const handleMenuItemClick = (view: "edit" | "privacy" | "activity" | "help" | "terms") => {
+  const handleMenuItemClick = (view: "privacy" | "activity" | "help" | "terms") => {
     setCurrentView(view)
   }
 
   const renderCurrentView = () => {
     switch (currentView) {
-      case "edit":
-        return renderEditProfile()
       case "privacy":
         return renderPrivacySecurity()
       case "activity":
@@ -81,57 +79,6 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
         return renderMainProfile()
     }
   }
-
-  const renderEditProfile = () => (
-    <div className="h-full bg-background flex flex-col">
-      <div className="px-4 py-3 flex-shrink-0 border-b border-border">
-        <div className="flex items-center space-x-3">
-          <Button variant="ghost" size="sm" onClick={() => setCurrentView("main")} className="p-2">
-            <ChevronLeft className="w-5 h-5" />
-          </Button>
-          <h1 className="text-lg font-semibold text-foreground">Edit Profile</h1>
-        </div>
-      </div>
-
-      <div className="flex-1 overflow-y-auto p-4">
-        <Card>
-          <CardContent className="p-4 space-y-4">
-            <div className="flex items-center space-x-4 mb-4">
-              <Avatar className="w-16 h-16">
-                <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.displayName} />
-                <AvatarFallback className="text-lg">{currentUser.displayName[0]}</AvatarFallback>
-              </Avatar>
-              <Button variant="outline" size="sm">
-                Change Photo
-              </Button>
-            </div>
-
-            <div className="space-y-3">
-              <div>
-                <label className="text-sm font-medium text-foreground">Display Name</label>
-                <Input defaultValue={currentUser.displayName} className="mt-1" />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-foreground">Username</label>
-                <Input defaultValue={currentUser.username} className="mt-1" />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-foreground">Bio</label>
-                <Textarea defaultValue={currentUser.bio} rows={3} className="mt-1" />
-              </div>
-            </div>
-
-            <div className="flex space-x-3 pt-4">
-              <Button className="flex-1">Save Changes</Button>
-              <Button variant="outline" onClick={() => setCurrentView("main")}>
-                Cancel
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  )
 
   const renderPrivacySecurity = () => (
     <div className="h-full bg-background flex flex-col">
@@ -374,22 +321,17 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
           <CardContent className="p-4">
             <div className="flex items-start space-x-3 mb-3">
               <Avatar className="w-16 h-16">
-                <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.displayName} />
-                <AvatarFallback className="text-lg">{currentUser.displayName[0]}</AvatarFallback>
+                <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt="User Avatar" />
+                <AvatarFallback className="text-lg">U</AvatarFallback>
               </Avatar>
 
               <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-1">
-                  <h2 className="text-lg font-bold text-foreground">{currentUser.displayName}</h2>
-                </div>
                 <p className="text-muted-foreground text-sm mb-2">{currentUser.username}</p>
                 <Badge variant="secondary" className="text-xs">
                   ORB Verified • {currentUser.verificationDate}
                 </Badge>
               </div>
             </div>
-
-            <p className="text-foreground text-sm mb-3">{currentUser.bio}</p>
 
             {/* Stats */}
             <div className="grid grid-cols-4 gap-3 text-center">
@@ -454,9 +396,6 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
                   className="w-full flex items-center space-x-3 p-4 hover:bg-muted/50 transition-colors active:bg-muted"
                   onClick={() => {
                     switch (item.title) {
-                      case "Edit Profile":
-                        handleMenuItemClick("edit")
-                        break
                       case "Privacy & Security":
                         handleMenuItemClick("privacy")
                         break
@@ -506,20 +445,6 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
   )
 
   const menuItems = [
-    {
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-          />
-        </svg>
-      ),
-      title: "Edit Profile",
-      subtitle: "Update your profile information",
-    },
     {
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
