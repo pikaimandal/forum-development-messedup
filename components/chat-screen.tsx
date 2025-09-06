@@ -511,41 +511,52 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
     }
   }
 
-  // Get message date from timestamp (for grouping)
+  // Get message date from timestamp (for grouping) - Using UTC
   const getMessageDate = (timestamp: string) => {
     try {
       // Handle ISO timestamp strings
       if (timestamp.includes('T') && timestamp.includes('Z')) {
-        return new Date(timestamp).toDateString()
+        const date = new Date(timestamp)
+        return date.toISOString().split('T')[0] // Returns YYYY-MM-DD in UTC
       }
-      // For relative timestamps, estimate the date
+      // For relative timestamps, estimate the date in UTC
       const now = new Date()
       if (timestamp.includes('h')) {
         const hours = parseInt(timestamp.replace('h', ''))
         const messageDate = new Date(now.getTime() - (hours * 60 * 60 * 1000))
-        return messageDate.toDateString()
+        return messageDate.toISOString().split('T')[0]
       } else if (timestamp.includes('m')) {
         const minutes = parseInt(timestamp.replace('m', ''))
         const messageDate = new Date(now.getTime() - (minutes * 60 * 1000))
-        return messageDate.toDateString()
+        return messageDate.toISOString().split('T')[0]
       } else if (timestamp.includes('d')) {
         const days = parseInt(timestamp.replace('d', ''))
         const messageDate = new Date(now.getTime() - (days * 24 * 60 * 60 * 1000))
-        return messageDate.toDateString()
+        return messageDate.toISOString().split('T')[0]
       }
-      return now.toDateString()
+      return now.toISOString().split('T')[0]
     } catch {
-      return new Date().toDateString()
+      return new Date().toISOString().split('T')[0]
     }
   }
 
-  // Format date for display (DD.MM.YYYY format like Telegram)
+  // Format date for display (DD.MM.YYYY format like Telegram) - Using UTC
   const formatDateSeparator = (dateString: string) => {
     try {
-      const date = new Date(dateString)
-      const day = date.getDate().toString().padStart(2, '0')
-      const month = (date.getMonth() + 1).toString().padStart(2, '0')
-      const year = date.getFullYear()
+      // Handle both ISO date string (YYYY-MM-DD) and full date strings
+      let date: Date
+      if (dateString.includes('-') && dateString.length === 10) {
+        // YYYY-MM-DD format - parse as UTC
+        date = new Date(dateString + 'T00:00:00.000Z')
+      } else {
+        // Full date string - convert to UTC
+        date = new Date(dateString)
+      }
+      
+      // Get UTC date components
+      const day = date.getUTCDate().toString().padStart(2, '0')
+      const month = (date.getUTCMonth() + 1).toString().padStart(2, '0')
+      const year = date.getUTCFullYear()
       return `${day}.${month}.${year}`
     } catch {
       return dateString
