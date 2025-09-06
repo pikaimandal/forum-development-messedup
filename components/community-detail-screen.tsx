@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { ArrowLeft, Users, MessageCircle, Shield, CheckCircle, UserMinus, Crown, Clock } from "lucide-react"
+import { ArrowLeft, Users, MessageCircle, Shield, CheckCircle, UserMinus, Crown, Clock, Globe, Code, Newspaper, Brain, HelpCircle, Megaphone } from "lucide-react"
 
 interface Community {
   id: string
@@ -15,6 +15,7 @@ interface Community {
   color: string
   rules: string[]
   moderators: string[]
+  icon: React.ComponentType<{ className?: string }>
 }
 
 interface CommunityDetailScreenProps {
@@ -34,6 +35,7 @@ const communityData: Record<string, Community> = {
       "General discussion room for all topics and community introductions. This is the main hub where verified humans can connect, share ideas, and engage in meaningful conversations about any subject.",
     members: 18500,
     color: "bg-primary",
+    icon: Globe,
     rules: [
       "Be respectful and kind to all community members",
       "No spam, self-promotion, or off-topic content",
@@ -49,6 +51,7 @@ const communityData: Record<string, Community> = {
       "Technical discussions, code reviews, and development help. Share your projects, ask for advice, and collaborate with fellow developers on various programming languages and technologies.",
     members: 5600,
     color: "bg-emerald-500",
+    icon: Code,
     rules: [
       "Share code snippets and technical resources",
       "Help others with programming questions",
@@ -64,6 +67,7 @@ const communityData: Record<string, Community> = {
       "Global news, current events, and world affairs discussion. Stay informed about what's happening around the world and engage in thoughtful discussions about current events.",
     members: 12300,
     color: "bg-blue-500",
+    icon: Newspaper,
     rules: [
       "Share credible news sources only",
       "Maintain civil discourse on sensitive topics",
@@ -79,6 +83,7 @@ const communityData: Record<string, Community> = {
       "Artificial intelligence, technology innovations, and future trends. Explore the latest developments in AI, discuss emerging technologies, and share insights about the future of tech.",
     members: 8900,
     color: "bg-purple-500",
+    icon: Brain,
     rules: [
       "Share AI research and tech innovations",
       "Discuss ethical implications of technology",
@@ -94,6 +99,7 @@ const communityData: Record<string, Community> = {
       "Questions, answers, and knowledge sharing from the community. Ask anything you're curious about and help others by sharing your knowledge and expertise.",
     members: 6700,
     color: "bg-amber-500",
+    icon: HelpCircle,
     rules: [
       "Ask clear and specific questions",
       "Provide helpful and accurate answers",
@@ -109,6 +115,7 @@ const communityData: Record<string, Community> = {
       "Official updates, news, and important platform announcements. Stay up to date with the latest Forum features, policy changes, and community updates.",
     members: 15200,
     color: "bg-orange-500",
+    icon: Megaphone,
     rules: [
       "Official announcements only",
       "Read announcements before asking questions",
@@ -185,7 +192,7 @@ export function CommunityDetailScreen({
               <div
                 className={`w-16 h-16 rounded-2xl ${community.color} flex items-center justify-center flex-shrink-0`}
               >
-                <Users className="w-8 h-8 text-white" />
+                <community.icon className="w-8 h-8 text-white" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2 mb-2">
