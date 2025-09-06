@@ -5,7 +5,7 @@ export function SplashScreen() {
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
       {/* App Logo */}
       <div className="mb-8">
-        <div className="w-24 h-24 rounded-full flex items-center justify-center shadow-lg overflow-hidden bg-white">
+        <div className="w-24 h-24 rounded-full flex items-center justify-center shadow-lg overflow-hidden bg-black">
           <img 
             src="/world-forum-logo.png" 
             alt="Forum Logo" 
