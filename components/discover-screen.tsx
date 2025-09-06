@@ -149,7 +149,7 @@ export function DiscoverScreen({ onNavigateToCommunity }: DiscoverScreenProps) {
                       <h3 className="font-medium text-foreground text-sm mb-1">{topic.title}</h3>
                       <div className="flex items-center space-x-1 text-muted-foreground">
                         <TrendingUp className="w-3 h-3" />
-                        <span className="text-xs">{topic.engagement} interactions</span>
+                        <span className="text-xs">{topic.engagement} upvotes</span>
                       </div>
                     </div>
                   </div>
