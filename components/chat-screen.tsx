@@ -386,14 +386,13 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                       <div className="flex items-center space-x-1">
                         <button
                           onClick={() => handleVote(message.id, 'up')}
-                          className={`p-1 h-7 w-7 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors ${
-                            message.userVote === 'up' ? 'text-green-500' : 'text-muted-foreground hover:text-green-500'
-                          }`}
+                          className="p-1 h-7 w-7 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
                           style={{ 
                             outline: 'none', 
                             boxShadow: 'none', 
                             border: 'none',
-                            background: 'transparent'
+                            background: 'transparent',
+                            color: message.userVote === 'up' ? '#22c55e' : '#6b7280'
                           }}
                           onFocus={(e) => e.target.blur()}
                         >
@@ -405,14 +404,13 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                       <div className="flex items-center space-x-1">
                         <button
                           onClick={() => handleVote(message.id, 'down')}
-                          className={`p-1 h-7 w-7 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors ${
-                            message.userVote === 'down' ? 'text-red-500' : 'text-muted-foreground hover:text-red-500'
-                          }`}
+                          className="p-1 h-7 w-7 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
                           style={{ 
                             outline: 'none', 
                             boxShadow: 'none', 
                             border: 'none',
-                            background: 'transparent'
+                            background: 'transparent',
+                            color: message.userVote === 'down' ? '#ef4444' : '#6b7280'
                           }}
                           onFocus={(e) => e.target.blur()}
                         >

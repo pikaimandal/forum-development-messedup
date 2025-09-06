@@ -136,9 +136,18 @@
     border: none !important;
   }
   
-  /* Remove tap highlight on mobile */
+  /* Remove tap highlight on mobile and ensure color rendering */
   button {
     -webkit-tap-highlight-color: transparent !important;
     -webkit-focus-ring-color: transparent !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+  }
+  
+  /* Force color rendering on mobile */
+  svg {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
 }
