@@ -56,6 +56,8 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
   const [darkMode, setDarkMode] = useState(false)
   const [notifications, setNotifications] = useState(true)
   const [publicProfile, setPublicProfile] = useState(true)
+  const [showTerms, setShowTerms] = useState(false)
+  const [showPrivacy, setShowPrivacy] = useState(false)
   const [currentView, setCurrentView] = useState<"main" | "activity" | "help" | "terms">("main")
 
   const handleDarkModeToggle = (enabled: boolean) => {
@@ -289,9 +291,61 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
               By using Forum, you agree to our terms of service. This includes maintaining respectful discourse
               and following community guidelines.
             </p>
-            <Button variant="outline" size="sm">
-              Read Full Terms
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setShowTerms(!showTerms)}
+            >
+              {showTerms ? "Hide ToS" : "Read ToS"}
             </Button>
+            
+            {showTerms && (
+              <div className="mt-4 p-4 bg-muted/30 rounded-lg text-sm space-y-3">
+                <div>
+                  <h3 className="font-semibold mb-2">1. Acceptance of Terms</h3>
+                  <p className="text-muted-foreground">
+                    By accessing and using Forum, you accept and agree to be bound by the terms and provision of this agreement.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-2">2. User Conduct</h3>
+                  <p className="text-muted-foreground">
+                    Users must maintain respectful discourse, avoid harassment, spam, or inappropriate content. 
+                    All users must be verified humans through World ID verification.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-2">3. Content Guidelines</h3>
+                  <p className="text-muted-foreground">
+                    Users are responsible for their content. We reserve the right to remove content that violates 
+                    community standards or applicable laws.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-2">4. Account Security</h3>
+                  <p className="text-muted-foreground">
+                    Users are responsible for maintaining the security of their World ID credentials and account information.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-2">5. Limitation of Liability</h3>
+                  <p className="text-muted-foreground">
+                    Forum is provided "as is" without warranties. We are not liable for any damages arising from use of the service.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-2">6. Changes to Terms</h3>
+                  <p className="text-muted-foreground">
+                    We reserve the right to modify these terms at any time. Continued use constitutes acceptance of new terms.
+                  </p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -304,9 +358,72 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
               We are committed to protecting your privacy. Your biometric data is processed locally and never stored on
               our servers.
             </p>
-            <Button variant="outline" size="sm">
-              Read Privacy Policy
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setShowPrivacy(!showPrivacy)}
+            >
+              {showPrivacy ? "Hide Privacy Policy" : "Read Privacy Policy"}
             </Button>
+            
+            {showPrivacy && (
+              <div className="mt-4 p-4 bg-muted/30 rounded-lg text-sm space-y-3">
+                <div>
+                  <h3 className="font-semibold mb-2">Data Collection</h3>
+                  <p className="text-muted-foreground">
+                    We collect minimal data necessary for service operation: World ID verification status, 
+                    messages, votes, and basic profile information.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-2">Biometric Data</h3>
+                  <p className="text-muted-foreground">
+                    All biometric verification is handled by World ID. We never receive, store, or process 
+                    your biometric data. Only verification status is shared with us.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-2">Data Usage</h3>
+                  <p className="text-muted-foreground">
+                    Your data is used solely to provide Forum services: displaying messages, enabling votes, 
+                    and maintaining community features.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-2">Data Sharing</h3>
+                  <p className="text-muted-foreground">
+                    We do not sell or share your personal data with third parties. Community messages and votes 
+                    are visible to other verified users as part of the service.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-2">Data Security</h3>
+                  <p className="text-muted-foreground">
+                    We implement industry-standard security measures to protect your data. All communications 
+                    are encrypted in transit.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-2">Your Rights</h3>
+                  <p className="text-muted-foreground">
+                    You can request data deletion by contacting help@talkapp.world. Note that some data may be 
+                    retained for legal compliance.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-2">Contact</h3>
+                  <p className="text-muted-foreground">
+                    For privacy questions or requests, contact us at help@talkapp.world or visit https://talkapp.world
+                  </p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -328,7 +445,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
               <div className="flex-1">
                 <p className="text-muted-foreground text-sm mb-1">{currentUser.username}</p>
                 <p className="text-muted-foreground text-xs mb-2">Wallet: {currentUser.walletAddress}</p>
-                <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 hover:bg-green-100">
+                <Badge variant="secondary" className="text-xs bg-green-700 text-white hover:bg-green-700 dark:bg-green-600 dark:text-white dark:hover:bg-green-600">
                   ORB Verified Human
                 </Badge>
               </div>
