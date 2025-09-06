@@ -30,6 +30,7 @@ interface UserProfile {
   bio: string
   isVerified: boolean
   verificationDate: string
+  walletAddress: string
   stats: UserStats
 }
 
@@ -41,6 +42,7 @@ const currentUser: UserProfile = {
   bio: "", // Removed for auto-population
   isVerified: true,
   verificationDate: "January 2024",
+  walletAddress: "0x1234...5678",
   stats: {
     posts: 23,
     comments: 156,
@@ -54,21 +56,19 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
   const [darkMode, setDarkMode] = useState(false)
   const [notifications, setNotifications] = useState(true)
   const [publicProfile, setPublicProfile] = useState(true)
-  const [currentView, setCurrentView] = useState<"main" | "privacy" | "activity" | "help" | "terms">("main")
+  const [currentView, setCurrentView] = useState<"main" | "activity" | "help" | "terms">("main")
 
   const handleDarkModeToggle = (enabled: boolean) => {
     setDarkMode(enabled)
     document.documentElement.classList.toggle("dark", enabled)
   }
 
-  const handleMenuItemClick = (view: "privacy" | "activity" | "help" | "terms") => {
+  const handleMenuItemClick = (view: "activity" | "help" | "terms") => {
     setCurrentView(view)
   }
 
   const renderCurrentView = () => {
     switch (currentView) {
-      case "privacy":
-        return renderPrivacySecurity()
       case "activity":
         return renderMyActivity()
       case "help":
@@ -221,15 +221,15 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="border-l-4 border-primary pl-4">
-              <h3 className="font-medium">How does human verification work?</h3>
+              <h3 className="font-medium">How do I join communities on Forum?</h3>
               <p className="text-sm text-muted-foreground">
-                World ID uses biometric verification to ensure each user is a unique human.
+                Browse communities in the Discover tab and click on any community to join and start participating in discussions.
               </p>
             </div>
             <div className="border-l-4 border-primary pl-4">
-              <h3 className="font-medium">Is my data secure?</h3>
+              <h3 className="font-medium">How does the voting system work?</h3>
               <p className="text-sm text-muted-foreground">
-                Yes, all biometric data is processed locally and never stored on servers.
+                You can upvote or downvote messages in communities. Your votes help surface quality content and build community engagement.
               </p>
             </div>
           </CardContent>
@@ -249,7 +249,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
                   d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                 />
               </svg>
-              Email Support
+              help@talkapp.world
             </Button>
             <Button variant="outline" className="w-full justify-start bg-transparent">
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -257,10 +257,10 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0 9c-5 0-9-4-9-9m9 9c5 0 9-4 9-9m-9 9V3m0 18c-5 0-9-4-9-9m9 9c5 0 9-4 9-9"
                 />
               </svg>
-              Live Chat
+              https://talkapp.world
             </Button>
           </CardContent>
         </Card>
@@ -326,9 +326,10 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
               </Avatar>
 
               <div className="flex-1">
-                <p className="text-muted-foreground text-sm mb-2">{currentUser.username}</p>
-                <Badge variant="secondary" className="text-xs">
-                  ORB Verified • {currentUser.verificationDate}
+                <p className="text-muted-foreground text-sm mb-1">{currentUser.username}</p>
+                <p className="text-muted-foreground text-xs mb-2">Wallet: {currentUser.walletAddress}</p>
+                <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 hover:bg-green-100">
+                  ORB Verified Human
                 </Badge>
               </div>
             </div>
@@ -396,9 +397,6 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
                   className="w-full flex items-center space-x-3 p-4 hover:bg-muted/50 transition-colors active:bg-muted"
                   onClick={() => {
                     switch (item.title) {
-                      case "Privacy & Security":
-                        handleMenuItemClick("privacy")
-                        break
                       case "My Activity":
                         handleMenuItemClick("activity")
                         break
@@ -445,20 +443,6 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
   )
 
   const menuItems = [
-    {
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-          />
-        </svg>
-      ),
-      title: "Privacy & Security",
-      subtitle: "Manage your privacy settings",
-    },
     {
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
