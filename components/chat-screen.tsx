@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown, Reply } from "lucide-react"
+import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown, MessageCircle } from "lucide-react"
 import { EmojiPicker } from "@/components/emoji-picker"
 
 interface ChatScreenProps {
@@ -188,6 +188,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [replyingTo, setReplyingTo] = useState<Message | null>(null)
   const emojiPickerRef = useRef<HTMLDivElement>(null)
+  const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
 
   const community = communityData[communityId]
   const maxCharacters = 500
@@ -325,6 +326,21 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
     setReplyingTo(message)
   }
 
+  const scrollToMessage = (messageId: string) => {
+    const messageElement = messageRefs.current[messageId]
+    if (messageElement) {
+      messageElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      })
+      // Add a brief highlight effect
+      messageElement.style.backgroundColor = 'rgba(59, 130, 246, 0.1)'
+      setTimeout(() => {
+        messageElement.style.backgroundColor = ''
+      }, 2000)
+    }
+  }
+
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -364,7 +380,11 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
           </div>
         ) : (
           messages.map((message) => (
-            <Card key={message.id} className="border-border bg-card">
+            <Card 
+              key={message.id} 
+              className="border-border bg-card"
+              ref={(el) => (messageRefs.current[message.id] = el)}
+            >
               <CardContent className="p-3">
                 <div className="flex items-start space-x-3">
                   <Avatar className="w-8 h-8 flex-shrink-0">
@@ -397,7 +417,10 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                     
                     {/* Reply Reference */}
                     {message.replyTo && (
-                      <div className="bg-muted/50 rounded-md p-2 mb-2 border-l-2 border-primary/50">
+                      <div 
+                        className="bg-muted/50 rounded-md p-2 mb-2 border-l-2 border-primary/50 cursor-pointer hover:bg-muted/70 transition-colors"
+                        onClick={() => scrollToMessage(message.replyTo!.id)}
+                      >
                         <div className="text-xs text-muted-foreground mb-1">
                           Replying to {message.replyTo.author}
                         </div>
@@ -459,7 +482,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                         }}
                         onFocus={(e) => e.target.blur()}
                       >
-                        <Reply className="w-4 h-4" />
+                        <MessageCircle className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
