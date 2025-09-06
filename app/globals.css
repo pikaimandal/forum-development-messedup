@@ -123,16 +123,22 @@
     @apply bg-background text-foreground;
   }
   
-  /* Remove focus styles for mobile vote buttons */
-  .vote-button {
-    outline: none !important;
-    box-shadow: none !important;
-  }
-  
+  /* Completely remove focus styles for mobile app */
+  button:focus,
+  button:focus-visible,
+  button:active,
+  .vote-button,
   .vote-button:focus,
   .vote-button:focus-visible,
   .vote-button:active {
     outline: none !important;
     box-shadow: none !important;
+    border: none !important;
+  }
+  
+  /* Remove tap highlight on mobile */
+  button {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-focus-ring-color: transparent !important;
   }
 }

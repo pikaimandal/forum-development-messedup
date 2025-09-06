@@ -384,28 +384,40 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                     {/* Vote buttons */}
                     <div className="flex items-center space-x-3 mt-2">
                       <div className="flex items-center space-x-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
+                        <button
                           onClick={() => handleVote(message.id, 'up')}
-                          className={`vote-button p-1 h-7 w-7 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:outline-none active:outline-none ${message.userVote === 'up' ? 'text-green-500 bg-green-50' : 'text-muted-foreground hover:text-green-500'}`}
-                          style={{ outline: 'none', boxShadow: 'none' }}
+                          className={`p-1 h-7 w-7 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors ${
+                            message.userVote === 'up' ? 'text-green-500 bg-green-50' : 'text-muted-foreground hover:text-green-500'
+                          }`}
+                          style={{ 
+                            outline: 'none', 
+                            boxShadow: 'none', 
+                            border: 'none',
+                            background: message.userVote === 'up' ? 'rgb(240 253 244)' : 'transparent'
+                          }}
+                          onFocus={(e) => e.target.blur()}
                         >
                           <ChevronUp className="w-4 h-4" />
-                        </Button>
+                        </button>
                         <span className="text-xs text-muted-foreground min-w-[20px] text-center">{message.upvotes}</span>
                       </div>
                       
                       <div className="flex items-center space-x-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
+                        <button
                           onClick={() => handleVote(message.id, 'down')}
-                          className={`vote-button p-1 h-7 w-7 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:outline-none active:outline-none ${message.userVote === 'down' ? 'text-red-500 bg-red-50' : 'text-muted-foreground hover:text-red-500'}`}
-                          style={{ outline: 'none', boxShadow: 'none' }}
+                          className={`p-1 h-7 w-7 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors ${
+                            message.userVote === 'down' ? 'text-red-500 bg-red-50' : 'text-muted-foreground hover:text-red-500'
+                          }`}
+                          style={{ 
+                            outline: 'none', 
+                            boxShadow: 'none', 
+                            border: 'none',
+                            background: message.userVote === 'down' ? 'rgb(254 242 242)' : 'transparent'
+                          }}
+                          onFocus={(e) => e.target.blur()}
                         >
                           <ChevronDown className="w-4 h-4" />
-                        </Button>
+                        </button>
                         <span className="text-xs text-muted-foreground min-w-[20px] text-center">{message.downvotes}</span>
                       </div>
                     </div>
