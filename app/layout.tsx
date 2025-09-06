@@ -15,6 +15,14 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: "Forum - Human Verified Community",
   description: "The world's first human-verified forum platform for authentic community discussions",
+  icons: {
+    icon: [
+      { url: "/world-forum-logo.png" },
+      { url: "/favicon.png" },
+    ],
+    shortcut: "/favicon.png",
+    apple: "/world-forum-logo.png",
+  },
 }
 
 export default function RootLayout({
