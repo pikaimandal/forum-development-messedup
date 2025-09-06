@@ -580,7 +580,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                 placeholder={`Message ${community.name}...`}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value.slice(0, maxCharacters))}
-                className="min-h-[48px] max-h-32 resize-none bg-input border-border text-sm pr-20 pb-6"
+                className="min-h-[48px] max-h-32 resize-none bg-input border-border text-sm pr-8 pb-6"
                 rows={1}
               />
               
@@ -589,7 +589,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                 variant="ghost"
                 size="sm"
                 onClick={handleEmojiClick}
-                className="absolute right-12 top-2 p-1 h-6 w-6"
+                className="absolute right-2 top-2 p-1 h-6 w-6"
               >
                 <Smile className="w-4 h-4" />
               </Button>
