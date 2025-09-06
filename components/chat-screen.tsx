@@ -247,8 +247,9 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   const handleSendMessage = () => {
     if (!newMessage.trim() || newMessage.length > maxCharacters) return
 
+    const messageId = `msg_${Date.now()}`
     const message: Message = {
-      id: `msg_${Date.now()}`,
+      id: messageId,
       author: "@You",
       authorAvatar: "/user-profile-avatar.png",
       content: newMessage,
@@ -265,6 +266,9 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
     setMessages((prev) => [...prev, message])
     setNewMessage("")
     setReplyingTo(null)
+    
+    // Auto-scroll to the new message
+    scrollToLatestMessage(messageId)
   }
 
   const handleReportMessage = (messageId: string, reason: string) => {
@@ -354,6 +358,20 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
     } else {
       console.log('Message element not found for ID:', messageId)
     }
+  }
+
+  const scrollToLatestMessage = (messageId: string) => {
+    // Scroll to the latest message without highlight effect
+    setTimeout(() => {
+      const messageElement = messageRefs.current[messageId]
+      if (messageElement) {
+        messageElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'end',
+          inline: 'nearest'
+        })
+      }
+    }, 150) // Slightly longer delay to ensure DOM update
   }
 
 
