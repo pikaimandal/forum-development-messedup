@@ -344,11 +344,12 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
         
         // Add a brief highlight effect
         messageElement.style.transition = 'background-color 0.3s ease'
-        messageElement.style.backgroundColor = 'rgba(59, 130, 246, 0.15)'
+        messageElement.style.backgroundColor = 'rgba(34, 197, 94, 0.25)'
+        messageElement.style.borderRadius = '8px'
         
         setTimeout(() => {
           messageElement.style.backgroundColor = ''
-        }, 2000)
+        }, 2500)
       }, 100)
     } else {
       console.log('Message element not found for ID:', messageId)
