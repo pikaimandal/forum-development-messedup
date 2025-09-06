@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown, MessageCircle } from "lucide-react"
+import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown, MessageCircle, Globe, Code, Newspaper, Brain, HelpCircle, Megaphone } from "lucide-react"
 import { EmojiPicker } from "@/components/emoji-picker"
 
 interface ChatScreenProps {
@@ -36,6 +36,7 @@ interface Community {
   name: string
   color: string
   members: number
+  icon: React.ReactNode
 }
 
 // Community data
@@ -45,36 +46,42 @@ const communityData: Record<string, Community> = {
     name: "Global Chat",
     color: "bg-primary",
     members: 18500,
+    icon: <Globe className="w-4 h-4 text-white" />,
   },
   developer: {
     id: "developer",
     name: "Developer",
     color: "bg-emerald-500",
     members: 5600,
+    icon: <Code className="w-4 h-4 text-white" />,
   },
   "world-news": {
     id: "world-news",
     name: "World News",
     color: "bg-blue-500",
     members: 12300,
+    icon: <Newspaper className="w-4 h-4 text-white" />,
   },
   "ai-tech": {
     id: "ai-tech",
     name: "AI & Tech",
     color: "bg-purple-500",
     members: 8900,
+    icon: <Brain className="w-4 h-4 text-white" />,
   },
   qa: {
     id: "qa",
     name: "Q&A",
     color: "bg-amber-500",
     members: 6700,
+    icon: <HelpCircle className="w-4 h-4 text-white" />,
   },
   announcements: {
     id: "announcements",
     name: "Announcements",
     color: "bg-orange-500",
     members: 15200,
+    icon: <Megaphone className="w-4 h-4 text-white" />,
   },
 }
 
@@ -374,6 +381,25 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
     }, 150) // Slightly longer delay to ensure DOM update
   }
 
+  const getCommunityLargeIcon = (communityId: string) => {
+    switch (communityId) {
+      case "global-chat":
+        return <Globe className="w-6 h-6 text-white" />
+      case "developer":
+        return <Code className="w-6 h-6 text-white" />
+      case "world-news":
+        return <Newspaper className="w-6 h-6 text-white" />
+      case "ai-tech":
+        return <Brain className="w-6 h-6 text-white" />
+      case "qa":
+        return <HelpCircle className="w-6 h-6 text-white" />
+      case "announcements":
+        return <Megaphone className="w-6 h-6 text-white" />
+      default:
+        return <Users className="w-6 h-6 text-white" />
+    }
+  }
+
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -386,7 +412,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
 
           <div className="flex items-center space-x-3 flex-1">
             <div className={`w-8 h-8 rounded-full ${community.color} flex items-center justify-center`}>
-              <Users className="w-4 h-4 text-white" />
+              {community.icon}
             </div>
             <div>
               <h1 className="text-base font-semibold text-foreground">{community.name}</h1>
@@ -406,7 +432,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
         {messages.length === 0 ? (
           <div className="text-center py-12">
             <div className={`w-12 h-12 rounded-xl ${community.color} flex items-center justify-center mx-auto mb-3`}>
-              <Users className="w-6 h-6 text-white" />
+              {getCommunityLargeIcon(community.id)}
             </div>
             <h3 className="text-base font-semibold text-foreground mb-2">Welcome to {community.name}!</h3>
             <p className="text-muted-foreground text-sm mb-4">Start the conversation by sending the first message.</p>

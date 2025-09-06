@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Users, ChevronRight, Search } from "lucide-react"
+import { Users, ChevronRight, Search, Globe, Code, Newspaper, Brain, HelpCircle, Megaphone } from "lucide-react"
 
 interface Community {
   id: string
@@ -11,6 +11,7 @@ interface Community {
   description: string
   members: number
   color: string
+  icon: React.ReactNode
 }
 
 interface CommunitiesScreenProps {
@@ -25,6 +26,7 @@ const communities: Community[] = [
     description: "General discussion room for all topics and community introductions",
     members: 18500,
     color: "bg-primary",
+    icon: <Globe className="w-5 h-5 text-white" />,
   },
   {
     id: "developer",
@@ -32,6 +34,7 @@ const communities: Community[] = [
     description: "Technical discussions, code reviews, and development help",
     members: 5600,
     color: "bg-emerald-500",
+    icon: <Code className="w-5 h-5 text-white" />,
   },
   {
     id: "world-news",
@@ -39,6 +42,7 @@ const communities: Community[] = [
     description: "Global news, current events, and world affairs discussion",
     members: 12300,
     color: "bg-blue-500",
+    icon: <Newspaper className="w-5 h-5 text-white" />,
   },
   {
     id: "ai-tech",
@@ -46,6 +50,7 @@ const communities: Community[] = [
     description: "Artificial intelligence, technology innovations, and future trends",
     members: 8900,
     color: "bg-purple-500",
+    icon: <Brain className="w-5 h-5 text-white" />,
   },
   {
     id: "qa",
@@ -53,6 +58,7 @@ const communities: Community[] = [
     description: "Questions, answers, and knowledge sharing from the community",
     members: 6700,
     color: "bg-amber-500",
+    icon: <HelpCircle className="w-5 h-5 text-white" />,
   },
   {
     id: "announcements",
@@ -60,6 +66,7 @@ const communities: Community[] = [
     description: "Official updates, news, and important platform announcements",
     members: 15200,
     color: "bg-orange-500",
+    icon: <Megaphone className="w-5 h-5 text-white" />,
   },
 ]
 
@@ -110,7 +117,7 @@ export function CommunitiesScreen({ onNavigateToCommunity, joinedCommunities }: 
                       <div
                         className={`w-10 h-10 rounded-full ${community.color} flex items-center justify-center flex-shrink-0`}
                       >
-                        <Users className="w-5 h-5 text-white" />
+                        {community.icon}
                       </div>
 
                       <div className="flex-1 min-w-0">
