@@ -9,7 +9,7 @@ interface Community {
   id: string
   name: string
   description: string
-  members: number
+  humans: number
   color: string
   icon: React.ReactNode
 }
@@ -24,7 +24,7 @@ const communities: Community[] = [
     id: "global-chat",
     name: "Global Chat",
     description: "General discussion room for all topics and community introductions",
-    members: 18500,
+    humans: 18500,
     color: "bg-primary",
     icon: <Globe className="w-5 h-5 text-primary-foreground" />,
   },
@@ -32,7 +32,7 @@ const communities: Community[] = [
     id: "developer",
     name: "Developer",
     description: "Technical discussions, code reviews, and development help",
-    members: 5600,
+    humans: 5600,
     color: "bg-emerald-500",
     icon: <Code className="w-5 h-5 text-white" />,
   },
@@ -40,7 +40,7 @@ const communities: Community[] = [
     id: "world-news",
     name: "World News",
     description: "Global news, current events, and world affairs discussion",
-    members: 12300,
+    humans: 12300,
     color: "bg-blue-500",
     icon: <Newspaper className="w-5 h-5 text-white" />,
   },
@@ -48,7 +48,7 @@ const communities: Community[] = [
     id: "ai-tech",
     name: "AI & Tech",
     description: "Artificial intelligence, technology innovations, and future trends",
-    members: 8900,
+    humans: 8900,
     color: "bg-purple-500",
     icon: <Brain className="w-5 h-5 text-white" />,
   },
@@ -56,7 +56,7 @@ const communities: Community[] = [
     id: "qa",
     name: "Q&A",
     description: "Questions, answers, and knowledge sharing from the community",
-    members: 6700,
+    humans: 6700,
     color: "bg-amber-500",
     icon: <HelpCircle className="w-5 h-5 text-white" />,
   },
@@ -64,7 +64,7 @@ const communities: Community[] = [
     id: "announcements",
     name: "Announcements",
     description: "Official updates, news, and important platform announcements",
-    members: 15200,
+    humans: 15200,
     color: "bg-orange-500",
     icon: <Megaphone className="w-5 h-5 text-white" />,
   },
@@ -132,7 +132,7 @@ export function CommunitiesScreen({ onNavigateToCommunity, joinedCommunities }: 
                         <p className="text-muted-foreground text-sm leading-relaxed mb-2">{community.description}</p>
                         <div className="flex items-center space-x-1 text-muted-foreground">
                           <Users className="w-3 h-3" />
-                          <span className="text-xs">{formatNumber(community.members)} members</span>
+                          <span className="text-xs">{formatNumber(community.humans)} humans</span>
                         </div>
                       </div>
                     </div>

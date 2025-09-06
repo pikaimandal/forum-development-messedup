@@ -11,7 +11,7 @@ interface Community {
   id: string
   name: string
   description: string
-  members: number
+  humans: number
   color: string
   rules: string[]
   moderators: string[]
@@ -34,11 +34,11 @@ const communityData: Record<string, Community> = {
     name: "Global Chat",
     description:
       "General discussion room for all topics and community introductions. This is the main hub where verified humans can connect, share ideas, and engage in meaningful conversations about any subject.",
-    members: 18500,
+    humans: 18500,
     color: "bg-primary",
     icon: Globe,
     rules: [
-      "Be respectful and kind to all community members",
+      "Be respectful and kind to all community humans",
       "No spam, self-promotion, or off-topic content",
       "Keep discussions constructive and meaningful",
       "Report inappropriate behavior to moderators",
@@ -51,7 +51,7 @@ const communityData: Record<string, Community> = {
     name: "Developer",
     description:
       "Technical discussions, code reviews, and development help. Share your projects, ask for advice, and collaborate with fellow developers on various programming languages and technologies.",
-    members: 5600,
+    humans: 5600,
     color: "bg-emerald-500",
     icon: Code,
     rules: [
@@ -68,7 +68,7 @@ const communityData: Record<string, Community> = {
     name: "World News",
     description:
       "Global news, current events, and world affairs discussion. Stay informed about what's happening around the world and engage in thoughtful discussions about current events.",
-    members: 12300,
+    humans: 12300,
     color: "bg-blue-500",
     icon: Newspaper,
     rules: [
@@ -85,7 +85,7 @@ const communityData: Record<string, Community> = {
     name: "AI & Tech",
     description:
       "Artificial intelligence, technology innovations, and future trends. Explore the latest developments in AI, discuss emerging technologies, and share insights about the future of tech.",
-    members: 8900,
+    humans: 8900,
     color: "bg-purple-500",
     icon: Brain,
     rules: [
@@ -102,7 +102,7 @@ const communityData: Record<string, Community> = {
     name: "Q&A",
     description:
       "Questions, answers, and knowledge sharing from the community. Ask anything you're curious about and help others by sharing your knowledge and expertise.",
-    members: 6700,
+    humans: 6700,
     color: "bg-amber-500",
     icon: HelpCircle,
     rules: [
@@ -119,7 +119,7 @@ const communityData: Record<string, Community> = {
     name: "Announcements",
     description:
       "Official updates, news, and important platform announcements. Stay up to date with the latest Forum features, policy changes, and community updates.",
-    members: 15200,
+    humans: 15200,
     color: "bg-orange-500",
     icon: Megaphone,
     rules: [
@@ -221,7 +221,7 @@ export function CommunityDetailScreen({
                 <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-3">
                   <div className="flex items-center space-x-1">
                     <Users className="w-4 h-4" />
-                    <span>{formatNumber(community.members)} members</span>
+                    <span>{formatNumber(community.humans)} humans</span>
                   </div>
                   <div className="flex items-center space-x-1">
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -278,8 +278,8 @@ export function CommunityDetailScreen({
               <h3 className="font-semibold text-foreground mb-3">Community Stats</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-foreground">{formatNumber(community.members)}</div>
-                  <div className="text-xs text-muted-foreground">Total Members</div>
+                  <div className="text-2xl font-bold text-foreground">{formatNumber(community.humans)}</div>
+                  <div className="text-xs text-muted-foreground">Total Humans</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-foreground">24/7</div>

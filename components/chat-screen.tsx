@@ -35,7 +35,7 @@ interface Community {
   id: string
   name: string
   color: string
-  members: number
+  humans: number
   icon: React.ReactNode
 }
 
@@ -45,42 +45,42 @@ const communityData: Record<string, Community> = {
     id: "global-chat",
     name: "Global Chat",
     color: "bg-primary",
-    members: 18500,
+    humans: 18500,
     icon: <Globe className="w-4 h-4 text-primary-foreground" />,
   },
   developer: {
     id: "developer",
     name: "Developer",
     color: "bg-emerald-500",
-    members: 5600,
+    humans: 5600,
     icon: <Code className="w-4 h-4 text-white" />,
   },
   "world-news": {
     id: "world-news",
     name: "World News",
     color: "bg-blue-500",
-    members: 12300,
+    humans: 12300,
     icon: <Newspaper className="w-4 h-4 text-white" />,
   },
   "ai-tech": {
     id: "ai-tech",
     name: "AI & Tech",
     color: "bg-purple-500",
-    members: 8900,
+    humans: 8900,
     icon: <Brain className="w-4 h-4 text-white" />,
   },
   qa: {
     id: "qa",
     name: "Q&A",
     color: "bg-amber-500",
-    members: 6700,
+    humans: 6700,
     icon: <HelpCircle className="w-4 h-4 text-white" />,
   },
   announcements: {
     id: "announcements",
     name: "Announcements",
     color: "bg-orange-500",
-    members: 15200,
+    humans: 15200,
     icon: <Megaphone className="w-4 h-4 text-white" />,
   },
 }
@@ -587,7 +587,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
               <h1 className="text-base font-semibold text-foreground">{community.name}</h1>
               <div className="flex items-center space-x-2 text-xs text-muted-foreground">
                 <Users className="w-3 h-3" />
-                <span>{formatNumber(community.members)} members</span>
+                <span>{formatNumber(community.humans)} humans</span>
                 <span>•</span>
                 <span>ORB Verified</span>
               </div>
