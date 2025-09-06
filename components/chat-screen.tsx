@@ -328,10 +328,12 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
 
   const scrollToMessage = (messageId: string) => {
     console.log('Scrolling to message:', messageId)
+    console.log('Available message refs:', Object.keys(messageRefs.current))
     const messageElement = messageRefs.current[messageId]
     console.log('Message element found:', !!messageElement)
     
     if (messageElement) {
+      console.log('Scrolling to element:', messageElement)
       // Use a slight delay to ensure DOM is ready
       setTimeout(() => {
         messageElement.scrollIntoView({ 
@@ -348,6 +350,8 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
           messageElement.style.backgroundColor = ''
         }, 2000)
       }, 100)
+    } else {
+      console.log('Message element not found for ID:', messageId)
     }
   }
 
@@ -390,11 +394,14 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
           </div>
         ) : (
           messages.map((message) => (
-            <Card 
-              key={message.id} 
-              className="border-border bg-card"
-              ref={(el) => (messageRefs.current[message.id] = el)}
+            <div 
+              key={message.id}
+              ref={(el) => {
+                console.log('Setting ref for message:', message.id, el)
+                messageRefs.current[message.id] = el
+              }}
             >
+              <Card className="border-border bg-card">
               <CardContent className="p-3">
                 <div className="flex items-start space-x-3">
                   <Avatar className="w-8 h-8 flex-shrink-0">
@@ -432,6 +439,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                         onClick={(e) => {
                           e.preventDefault()
                           e.stopPropagation()
+                          console.log('Reply reference clicked, replyTo:', message.replyTo)
                           scrollToMessage(message.replyTo!.id)
                         }}
                         style={{
@@ -509,6 +517,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                 </div>
               </CardContent>
             </Card>
+            </div>
           ))
         )}
       </div>
