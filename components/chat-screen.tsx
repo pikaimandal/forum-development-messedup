@@ -260,6 +260,40 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
     }
   }, [showMessageMenu])
 
+  // Clean up old message times from localStorage (older than 1 hour)
+  useEffect(() => {
+    const cleanupOldMessageTimes = () => {
+      try {
+        const messageTimes = JSON.parse(localStorage.getItem('messageTimes') || '{}')
+        const now = Date.now()
+        const oneHour = 60 * 60 * 1000
+        
+        let hasChanges = false
+        const cleanedTimes: { [key: string]: number } = {}
+        
+        for (const [messageId, timestamp] of Object.entries(messageTimes)) {
+          if (typeof timestamp === 'number' && (now - timestamp) <= oneHour) {
+            cleanedTimes[messageId] = timestamp
+          } else {
+            hasChanges = true
+          }
+        }
+        
+        if (hasChanges) {
+          localStorage.setItem('messageTimes', JSON.stringify(cleanedTimes))
+        }
+      } catch (error) {
+        console.error('Failed to cleanup message times:', error)
+      }
+    }
+
+    // Clean up on mount and then every 10 minutes
+    cleanupOldMessageTimes()
+    const interval = setInterval(cleanupOldMessageTimes, 10 * 60 * 1000)
+    
+    return () => clearInterval(interval)
+  }, [])
+
   if (!community) {
     return (
       <div className="h-full bg-background flex items-center justify-center">
@@ -282,8 +316,31 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   }
 
   const formatTimestamp = (timestamp: string) => {
-    // Convert relative time to more readable format
-    const now = new Date()
+    // Handle ISO date strings (Firebase-ready format)
+    if (timestamp.includes('T') && timestamp.includes('Z')) {
+      try {
+        const messageDate = new Date(timestamp)
+        const now = new Date()
+        const diffMs = now.getTime() - messageDate.getTime()
+        const diffMinutes = Math.floor(diffMs / (1000 * 60))
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+        
+        if (diffMinutes < 1) {
+          return "now"
+        } else if (diffMinutes < 60) {
+          return `${diffMinutes}m`
+        } else if (diffHours < 24) {
+          return `${diffHours}h`
+        } else {
+          return `${diffDays}d`
+        }
+      } catch {
+        return timestamp
+      }
+    }
+    
+    // Handle relative time strings (existing demo data)
     if (timestamp.includes("m")) {
       return timestamp
     } else if (timestamp.includes("h")) {
@@ -298,12 +355,13 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
     if (!newMessage.trim() || newMessage.length > maxCharacters) return
 
     const messageId = `msg_${Date.now()}`
+    const currentTime = new Date().toISOString()
     const message: Message = {
       id: messageId,
       author: "@You",
       authorAvatar: "/user-profile-avatar.png",
       content: newMessage,
-      timestamp: "now",
+      timestamp: currentTime, // Use ISO string for Firebase compatibility
       upvotes: 0,
       downvotes: 0,
       replyTo: replyingTo ? {
@@ -311,6 +369,15 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
         author: replyingTo.author,
         content: replyingTo.content
       } : undefined,
+    }
+
+    // Store message time in localStorage for edit time tracking
+    try {
+      const messageTimes = JSON.parse(localStorage.getItem('messageTimes') || '{}')
+      messageTimes[messageId] = Date.now()
+      localStorage.setItem('messageTimes', JSON.stringify(messageTimes))
+    } catch (error) {
+      console.error('Failed to store message time:', error)
     }
 
     setMessages((prev) => [...prev, message])
@@ -444,13 +511,34 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   }
 
   // Check if user can edit message (within 5 minutes)
-  const canEditMessage = (messageTimestamp: string) => {
-    // For demo purposes, allow editing if timestamp shows recent times like "1m", "2m", "3m", "4m"
-    if (messageTimestamp.includes('m') && !messageTimestamp.includes('h')) {
-      const minutes = parseInt(messageTimestamp.replace('m', ''))
-      return minutes <= 5
+  const canEditMessage = (messageId: string, messageTimestamp?: string) => {
+    // For Firebase implementation, use the timestamp
+    if (messageTimestamp && messageTimestamp !== "now") {
+      try {
+        const messageTime = new Date(messageTimestamp).getTime()
+        const now = Date.now()
+        const fiveMinutes = 5 * 60 * 1000
+        return (now - messageTime) <= fiveMinutes
+      } catch {
+        // If timestamp parsing fails, fall back to localStorage
+      }
     }
-    return false
+    
+    // For demo/localStorage implementation, use messageId
+    try {
+      const messageTimes = JSON.parse(localStorage.getItem('messageTimes') || '{}')
+      const messageTime = messageTimes[messageId]
+      
+      if (!messageTime) {
+        return false
+      }
+      
+      const now = Date.now()
+      const fiveMinutes = 5 * 60 * 1000
+      return (now - messageTime) <= fiveMinutes
+    } catch {
+      return false
+    }
   }
 
   const handleEditMessage = (messageId: string, currentContent: string) => {
@@ -558,7 +646,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                             {showMessageMenu === message.id && (
                               <div className="absolute right-0 top-7 bg-background border border-border rounded-md shadow-lg z-10 min-w-[120px]">
                                 <div className="py-1">
-                                  {canEditMessage(message.timestamp) && (
+                                  {canEditMessage(message.id, message.timestamp) && (
                                     <button
                                       className="w-full px-3 py-2 text-sm text-left hover:bg-muted flex items-center space-x-2"
                                       onClick={() => handleEditMessage(message.id, message.content)}
