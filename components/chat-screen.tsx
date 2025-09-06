@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown, MessageCircle, Globe, Code, Newspaper, Brain, HelpCircle, Megaphone } from "lucide-react"
+import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown, MessageCircle, Eye, Globe, Code, Newspaper, Brain, HelpCircle, Megaphone } from "lucide-react"
 import { EmojiPicker } from "@/components/emoji-picker"
 
 interface ChatScreenProps {
@@ -86,7 +86,7 @@ const communityData: Record<string, Community> = {
 }
 
 // Demo messages for different communities
-const demoMessages: Record<string, Message[]> = {
+const demoMessages: Record<string, any[]> = {
   "global-chat": [
     {
       id: "1",
@@ -97,6 +97,7 @@ const demoMessages: Record<string, Message[]> = {
       timestamp: "2h",
       upvotes: 15,
       downvotes: 2,
+      views: 1240,
     },
     {
       id: "2",
@@ -106,6 +107,7 @@ const demoMessages: Record<string, Message[]> = {
       timestamp: "1h",
       upvotes: 8,
       downvotes: 0,
+      views: 532,
     },
     {
       id: "3",
@@ -115,6 +117,7 @@ const demoMessages: Record<string, Message[]> = {
       timestamp: "45m",
       upvotes: 12,
       downvotes: 1,
+      views: 789,
     },
   ],
   developer: [
@@ -126,6 +129,7 @@ const demoMessages: Record<string, Message[]> = {
       timestamp: "3h",
       upvotes: 22,
       downvotes: 3,
+      views: 2100,
     },
     {
       id: "2",
@@ -136,6 +140,7 @@ const demoMessages: Record<string, Message[]> = {
       timestamp: "2h",
       upvotes: 18,
       downvotes: 1,
+      views: 1560,
     },
   ],
   "world-news": [
@@ -148,6 +153,7 @@ const demoMessages: Record<string, Message[]> = {
       timestamp: "4h",
       upvotes: 34,
       downvotes: 5,
+      views: 3420,
     },
   ],
   "ai-tech": [
@@ -160,6 +166,7 @@ const demoMessages: Record<string, Message[]> = {
       timestamp: "5h",
       upvotes: 28,
       downvotes: 4,
+      views: 2180,
     },
   ],
   qa: [
@@ -172,6 +179,7 @@ const demoMessages: Record<string, Message[]> = {
       timestamp: "6h",
       upvotes: 19,
       downvotes: 0,
+      views: 945,
     },
   ],
   announcements: [
@@ -184,12 +192,13 @@ const demoMessages: Record<string, Message[]> = {
       timestamp: "1d",
       upvotes: 156,
       downvotes: 8,
+      views: 12400,
     },
   ],
 }
 
 export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenProps) {
-  const [messages, setMessages] = useState<Message[]>(demoMessages[communityId] || [])
+  const [messages, setMessages] = useState<any[]>(demoMessages[communityId] || [])
   const [newMessage, setNewMessage] = useState("")
   const [showReportModal, setShowReportModal] = useState<string | null>(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
@@ -557,6 +566,11 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                       >
                         <MessageCircle className="w-4 h-4" />
                       </button>
+                      
+                      <div className="flex items-center space-x-1">
+                        <Eye className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-xs text-muted-foreground min-w-[20px] text-center">{formatNumber(message.views || 0)}</span>
+                      </div>
                     </div>
                   </div>
                 </div>

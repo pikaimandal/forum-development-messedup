@@ -34,6 +34,7 @@ export interface Message {
   createdAt: string
   isVerified: boolean
   isEdited?: boolean
+  views: number
 }
 
 export interface UserStats {
