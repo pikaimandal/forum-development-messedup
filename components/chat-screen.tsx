@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ArrowLeft, Users, Smile, Send } from "lucide-react"
+import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown } from "lucide-react"
 import { EmojiPicker } from "@/components/emoji-picker"
 
 interface ChatScreenProps {
@@ -21,6 +21,9 @@ interface Message {
   authorAvatar: string
   content: string
   timestamp: string
+  upvotes: number
+  downvotes: number
+  userVote?: 'up' | 'down' | null
 }
 
 interface Community {
@@ -80,6 +83,8 @@ const demoMessages: Record<string, Message[]> = {
       content:
         "Welcome to Global Chat! This is where verified humans connect and share ideas. Feel free to introduce yourself! 👋",
       timestamp: "2h",
+      upvotes: 15,
+      downvotes: 2,
     },
     {
       id: "2",
@@ -87,6 +92,8 @@ const demoMessages: Record<string, Message[]> = {
       authorAvatar: "/diverse-user-avatars.png",
       content: "Hi everyone! Just joined Forum and excited to be part of this human-verified community! 🎉",
       timestamp: "1h",
+      upvotes: 8,
+      downvotes: 0,
     },
     {
       id: "3",
@@ -94,6 +101,8 @@ const demoMessages: Record<string, Message[]> = {
       authorAvatar: "/user-profile-avatar.png",
       content: "Great to have you here! The community is growing fast and the discussions are always interesting 😊",
       timestamp: "45m",
+      upvotes: 12,
+      downvotes: 1,
     },
   ],
   developer: [
@@ -103,6 +112,8 @@ const demoMessages: Record<string, Message[]> = {
       authorAvatar: "/developer-coding.png",
       content: "Anyone working with the latest World ID SDK? I'm having some integration questions 🤔",
       timestamp: "3h",
+      upvotes: 22,
+      downvotes: 3,
     },
     {
       id: "2",
@@ -111,6 +122,8 @@ const demoMessages: Record<string, Message[]> = {
       content:
         "Just implemented it last week! The new documentation is really helpful. What specific issues are you facing?",
       timestamp: "2h",
+      upvotes: 18,
+      downvotes: 1,
     },
   ],
   "world-news": [
@@ -121,6 +134,8 @@ const demoMessages: Record<string, Message[]> = {
       content:
         "Digital identity adoption is accelerating globally. Several countries are now exploring similar verification systems 🌍",
       timestamp: "4h",
+      upvotes: 34,
+      downvotes: 5,
     },
   ],
   "ai-tech": [
@@ -131,6 +146,8 @@ const demoMessages: Record<string, Message[]> = {
       content:
         "The intersection of AI and human verification is fascinating. Biometric tech is advancing so rapidly! 🤖",
       timestamp: "5h",
+      upvotes: 28,
+      downvotes: 4,
     },
   ],
   qa: [
@@ -141,6 +158,8 @@ const demoMessages: Record<string, Message[]> = {
       content:
         "This is the Q&A community! Ask any questions about Forum, World ID, or anything else. We're here to help! ❓",
       timestamp: "6h",
+      upvotes: 19,
+      downvotes: 0,
     },
   ],
   announcements: [
@@ -151,6 +170,8 @@ const demoMessages: Record<string, Message[]> = {
       content:
         "🎉 Welcome to Forum Beta! We're excited to launch the world's first human-verified forum platform. More features coming soon!",
       timestamp: "1d",
+      upvotes: 156,
+      downvotes: 8,
     },
   ],
 }
@@ -225,6 +246,8 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
       authorAvatar: "/user-profile-avatar.png",
       content: newMessage,
       timestamp: "now",
+      upvotes: 0,
+      downvotes: 0,
     }
 
     setMessages((prev) => [...prev, message])
@@ -244,6 +267,46 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   const handleEmojiSelect = (emoji: string) => {
     setNewMessage(prev => prev + emoji)
     setShowEmojiPicker(false)
+  }
+
+  const handleVote = (messageId: string, voteType: 'up' | 'down') => {
+    setMessages(prevMessages => 
+      prevMessages.map(message => {
+        if (message.id === messageId) {
+          const currentVote = message.userVote
+          let newUpvotes = message.upvotes
+          let newDownvotes = message.downvotes
+          let newUserVote: 'up' | 'down' | null = voteType
+
+          // Remove previous vote if it exists
+          if (currentVote === 'up') {
+            newUpvotes--
+          } else if (currentVote === 'down') {
+            newDownvotes--
+          }
+
+          // If clicking the same vote type, remove the vote
+          if (currentVote === voteType) {
+            newUserVote = null
+          } else {
+            // Add the new vote
+            if (voteType === 'up') {
+              newUpvotes++
+            } else {
+              newDownvotes++
+            }
+          }
+
+          return {
+            ...message,
+            upvotes: newUpvotes,
+            downvotes: newDownvotes,
+            userVote: newUserVote
+          }
+        }
+        return message
+      })
+    )
   }
 
 
@@ -317,6 +380,33 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                       </Button>
                     </div>
                     <p className="text-foreground text-sm leading-relaxed break-words whitespace-pre-wrap">{message.content}</p>
+                    
+                    {/* Vote buttons */}
+                    <div className="flex items-center space-x-3 mt-2">
+                      <div className="flex items-center space-x-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleVote(message.id, 'up')}
+                          className={`p-1 h-7 w-7 ${message.userVote === 'up' ? 'text-green-500 bg-green-50' : 'text-muted-foreground hover:text-green-500'}`}
+                        >
+                          <ChevronUp className="w-4 h-4" />
+                        </Button>
+                        <span className="text-xs text-muted-foreground min-w-[20px] text-center">{message.upvotes}</span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleVote(message.id, 'down')}
+                          className={`p-1 h-7 w-7 ${message.userVote === 'down' ? 'text-red-500 bg-red-50' : 'text-muted-foreground hover:text-red-500'}`}
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                        </Button>
+                        <span className="text-xs text-muted-foreground min-w-[20px] text-center">{message.downvotes}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
