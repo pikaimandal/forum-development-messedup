@@ -16,6 +16,7 @@ interface Community {
   rules: string[]
   moderators: string[]
   icon: React.ComponentType<{ className?: string }>
+  createdAt: string
 }
 
 interface CommunityDetailScreenProps {
@@ -42,7 +43,8 @@ const communityData: Record<string, Community> = {
       "Keep discussions constructive and meaningful",
       "Report inappropriate behavior to moderators",
     ],
-    moderators: ["@CommunityMod", "@GlobalAdmin"],
+    moderators: ["@pikai.0000"],
+    createdAt: "September 2025",
   },
   developer: {
     id: "developer",
@@ -58,7 +60,8 @@ const communityData: Record<string, Community> = {
       "No job postings without prior approval",
       "Keep discussions technical and relevant",
     ],
-    moderators: ["@DevLead", "@TechModerator"],
+    moderators: ["@pikai.0000"],
+    createdAt: "September 2025",
   },
   "world-news": {
     id: "world-news",
@@ -74,7 +77,8 @@ const communityData: Record<string, Community> = {
       "No misinformation or conspiracy theories",
       "Fact-check before sharing information",
     ],
-    moderators: ["@NewsEditor", "@FactChecker"],
+    moderators: ["@pikai.0000"],
+    createdAt: "September 2025",
   },
   "ai-tech": {
     id: "ai-tech",
@@ -90,7 +94,8 @@ const communityData: Record<string, Community> = {
       "No fear-mongering about AI",
       "Support claims with credible sources",
     ],
-    moderators: ["@AIResearcher", "@TechExpert"],
+    moderators: ["@pikai.0000"],
+    createdAt: "September 2025",
   },
   qa: {
     id: "qa",
@@ -106,7 +111,8 @@ const communityData: Record<string, Community> = {
       "Search before asking duplicate questions",
       "Thank contributors for their help",
     ],
-    moderators: ["@KnowledgeKeeper", "@HelpModerator"],
+    moderators: ["@pikai.0000"],
+    createdAt: "September 2025",
   },
   announcements: {
     id: "announcements",
@@ -122,7 +128,8 @@ const communityData: Record<string, Community> = {
       "Provide feedback constructively",
       "Follow new guidelines promptly",
     ],
-    moderators: ["@WorldForumTeam", "@CommunityManager"],
+    moderators: ["@pikai.0000"],
+    createdAt: "September 2025",
   },
 }
 
@@ -341,7 +348,7 @@ export function CommunityDetailScreen({
               <div className="space-y-3 text-sm">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Created</span>
-                  <span className="text-foreground font-medium">January 2024</span>
+                  <span className="text-foreground font-medium">{community.createdAt}</span>
                 </div>
                 <Separator />
                 <div className="flex items-center justify-between">
