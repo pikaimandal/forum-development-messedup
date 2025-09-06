@@ -251,7 +251,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
                   d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                 />
               </svg>
-              help@talkapp.world
+              help@worldforum.world
             </Button>
             <Button variant="outline" className="w-full justify-start bg-transparent">
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -262,7 +262,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
                   d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0 9c-5 0-9-4-9-9m9 9c5 0 9-4 9-9m-9 9V3m0 18c-5 0-9-4-9-9m9 9c5 0 9-4 9-9"
                 />
               </svg>
-              https://talkapp.world
+              https://worldforum.world
             </Button>
           </CardContent>
         </Card>
@@ -411,7 +411,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
                 <div>
                   <h3 className="font-semibold mb-2">Your Rights</h3>
                   <p className="text-muted-foreground">
-                    You can request data deletion by contacting help@talkapp.world. Note that some data may be 
+                    You can request data deletion by contacting support@worldforum.world. Note that some data may be 
                     retained for legal compliance.
                   </p>
                 </div>
@@ -419,7 +419,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
                 <div>
                   <h3 className="font-semibold mb-2">Contact</h3>
                   <p className="text-muted-foreground">
-                    For privacy questions or requests, contact us at help@talkapp.world or visit https://talkapp.world
+                    For privacy questions or requests, contact us at support@worldforum.world or visit https://worldforum.world
                   </p>
                 </div>
               </div>
