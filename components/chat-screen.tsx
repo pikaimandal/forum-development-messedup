@@ -327,17 +327,27 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   }
 
   const scrollToMessage = (messageId: string) => {
+    console.log('Scrolling to message:', messageId)
     const messageElement = messageRefs.current[messageId]
+    console.log('Message element found:', !!messageElement)
+    
     if (messageElement) {
-      messageElement.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center' 
-      })
-      // Add a brief highlight effect
-      messageElement.style.backgroundColor = 'rgba(59, 130, 246, 0.1)'
+      // Use a slight delay to ensure DOM is ready
       setTimeout(() => {
-        messageElement.style.backgroundColor = ''
-      }, 2000)
+        messageElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center',
+          inline: 'nearest'
+        })
+        
+        // Add a brief highlight effect
+        messageElement.style.transition = 'background-color 0.3s ease'
+        messageElement.style.backgroundColor = 'rgba(59, 130, 246, 0.15)'
+        
+        setTimeout(() => {
+          messageElement.style.backgroundColor = ''
+        }, 2000)
+      }, 100)
     }
   }
 
@@ -418,13 +428,23 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                     {/* Reply Reference */}
                     {message.replyTo && (
                       <div 
-                        className="bg-muted/50 rounded-md p-2 mb-2 border-l-2 border-primary/50 cursor-pointer hover:bg-muted/70 transition-colors"
-                        onClick={() => scrollToMessage(message.replyTo!.id)}
+                        className="bg-muted/50 rounded-md p-2 mb-2 border-l-2 border-primary/50 cursor-pointer hover:bg-muted/70 transition-colors select-none"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          scrollToMessage(message.replyTo!.id)
+                        }}
+                        style={{
+                          userSelect: 'none',
+                          WebkitUserSelect: 'none',
+                          MozUserSelect: 'none',
+                          msUserSelect: 'none'
+                        }}
                       >
-                        <div className="text-xs text-muted-foreground mb-1">
+                        <div className="text-xs text-muted-foreground mb-1 pointer-events-none">
                           Replying to {message.replyTo.author}
                         </div>
-                        <div className="text-xs text-muted-foreground truncate">
+                        <div className="text-xs text-muted-foreground truncate pointer-events-none">
                           {message.replyTo.content}
                         </div>
                       </div>
