@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown } from "lucide-react"
+import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown, Reply } from "lucide-react"
 import { EmojiPicker } from "@/components/emoji-picker"
 
 interface ChatScreenProps {
@@ -24,6 +24,11 @@ interface Message {
   upvotes: number
   downvotes: number
   userVote?: 'up' | 'down' | null
+  replyTo?: {
+    id: string
+    author: string
+    content: string
+  }
 }
 
 interface Community {
@@ -181,6 +186,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   const [newMessage, setNewMessage] = useState("")
   const [showReportModal, setShowReportModal] = useState<string | null>(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [replyingTo, setReplyingTo] = useState<Message | null>(null)
   const emojiPickerRef = useRef<HTMLDivElement>(null)
 
   const community = communityData[communityId]
@@ -248,10 +254,16 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
       timestamp: "now",
       upvotes: 0,
       downvotes: 0,
+      replyTo: replyingTo ? {
+        id: replyingTo.id,
+        author: replyingTo.author,
+        content: replyingTo.content
+      } : undefined,
     }
 
     setMessages((prev) => [...prev, message])
     setNewMessage("")
+    setReplyingTo(null)
   }
 
   const handleReportMessage = (messageId: string, reason: string) => {
@@ -309,6 +321,9 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
     )
   }
 
+  const handleReply = (message: Message) => {
+    setReplyingTo(message)
+  }
 
 
   return (
@@ -379,9 +394,22 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                         </svg>
                       </Button>
                     </div>
+                    
+                    {/* Reply Reference */}
+                    {message.replyTo && (
+                      <div className="bg-muted/50 rounded-md p-2 mb-2 border-l-2 border-primary/50">
+                        <div className="text-xs text-muted-foreground mb-1">
+                          Replying to {message.replyTo.author}
+                        </div>
+                        <div className="text-xs text-muted-foreground truncate">
+                          {message.replyTo.content}
+                        </div>
+                      </div>
+                    )}
+                    
                     <p className="text-foreground text-sm leading-relaxed break-words whitespace-pre-wrap">{message.content}</p>
                     
-                    {/* Vote buttons */}
+                    {/* Vote and Reply buttons */}
                     <div className="flex items-center space-x-3 mt-2">
                       <div className="flex items-center space-x-1">
                         <button
@@ -418,6 +446,21 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                         </button>
                         <span className="text-xs text-muted-foreground min-w-[20px] text-center">{message.downvotes}</span>
                       </div>
+                      
+                      <button
+                        onClick={() => handleReply(message)}
+                        className="p-1 h-7 w-7 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                        style={{ 
+                          outline: 'none', 
+                          boxShadow: 'none', 
+                          border: 'none',
+                          background: 'transparent',
+                          color: '#6b7280'
+                        }}
+                        onFocus={(e) => e.target.blur()}
+                      >
+                        <Reply className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -437,6 +480,29 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
       {/* Message Input */}
       <div className="bg-card border-t border-border p-4 flex-shrink-0">
         <div className="space-y-2">
+          {/* Reply Preview */}
+          {replyingTo && (
+            <div className="bg-muted rounded-lg p-3 border-l-4 border-primary">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm font-medium text-foreground">Replying to {replyingTo.author}</span>
+                <button
+                  onClick={() => setReplyingTo(null)}
+                  className="text-muted-foreground hover:text-foreground"
+                  style={{ 
+                    outline: 'none', 
+                    boxShadow: 'none', 
+                    border: 'none',
+                    background: 'transparent'
+                  }}
+                  onFocus={(e) => e.target.blur()}
+                >
+                  ×
+                </button>
+              </div>
+              <p className="text-sm text-muted-foreground truncate">{replyingTo.content}</p>
+            </div>
+          )}
+          
           <div className="flex items-end space-x-2">
             <div className="flex-1 relative">
               <Textarea
