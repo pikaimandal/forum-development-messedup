@@ -443,8 +443,8 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
               </Avatar>
 
               <div className="flex-1">
-                <p className="text-muted-foreground text-sm mb-1">{currentUser.username}</p>
-                <p className="text-muted-foreground text-xs mb-2">Wallet: {currentUser.walletAddress}</p>
+                <p className="text-black dark:text-white text-sm mb-1 font-medium">{currentUser.username}</p>
+                <p className="text-black dark:text-white text-xs mb-2">Wallet: {currentUser.walletAddress}</p>
                 <Badge variant="secondary" className="text-xs bg-green-700 text-white hover:bg-green-700 dark:bg-green-600 dark:text-white dark:hover:bg-green-600">
                   ORB Verified Human
                 </Badge>
