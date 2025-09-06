@@ -141,9 +141,10 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       authorAvatar: "/worldcoin-team.png",
       content:
         "Welcome to Global Chat! This is where verified humans connect and share ideas. Feel free to introduce yourself! 👋",
-      timestamp: "2h",
-      createdAt: "2024-01-15T10:00:00Z",
+      timestamp: "2025-09-04T10:00:00Z",
+      createdAt: "2025-09-04T10:00:00Z",
       isVerified: true,
+      views: 234,
     },
     {
       id: "msg_2",
@@ -152,9 +153,10 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       author: "@NewMember",
       authorAvatar: "/diverse-user-avatars.png",
       content: "Hi everyone! Just joined Forum and excited to be part of this human-verified community! 🎉",
-      timestamp: "1h",
-      createdAt: "2024-01-15T11:00:00Z",
+      timestamp: "2025-09-04T11:00:00Z",
+      createdAt: "2025-09-04T11:00:00Z",
       isVerified: true,
+      views: 89,
     },
     {
       id: "msg_3",
@@ -163,9 +165,10 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       author: "@ActiveUser",
       authorAvatar: "/user-profile-avatar.png",
       content: "Great to have you here! The community is growing fast and the discussions are always interesting 😊",
-      timestamp: "45m",
-      createdAt: "2024-01-15T11:15:00Z",
+      timestamp: "2025-09-05T11:15:00Z",
+      createdAt: "2025-09-05T11:15:00Z",
       isVerified: true,
+      views: 45,
     },
   ],
   developer: [
@@ -176,9 +179,10 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       author: "@DevLead",
       authorAvatar: "/developer-coding.png",
       content: "Anyone working with the latest World ID SDK? I'm having some integration questions 🤔",
-      timestamp: "3h",
-      createdAt: "2024-01-15T09:00:00Z",
+      timestamp: "2025-09-05T09:00:00Z",
+      createdAt: "2025-09-05T09:00:00Z",
       isVerified: true,
+      views: 156,
     },
     {
       id: "msg_5",
@@ -188,9 +192,10 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       authorAvatar: "/developer-working.png",
       content:
         "Just implemented it last week! The new documentation is really helpful. What specific issues are you facing?",
-      timestamp: "2h",
-      createdAt: "2024-01-15T10:00:00Z",
+      timestamp: "2025-09-06T10:00:00Z",
+      createdAt: "2025-09-06T10:00:00Z",
       isVerified: true,
+      views: 67,
     },
   ],
   "world-news": [
@@ -202,9 +207,10 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       authorAvatar: "/worldcoin-team.png",
       content:
         "Digital identity adoption is accelerating globally. Several countries are now exploring similar verification systems 🌍",
-      timestamp: "4h",
-      createdAt: "2024-01-15T08:00:00Z",
+      timestamp: "2025-09-06T08:00:00Z",
+      createdAt: "2025-09-06T08:00:00Z",
       isVerified: true,
+      views: 312,
     },
   ],
   "ai-tech": [
@@ -216,9 +222,10 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       authorAvatar: "/tech-enthusiast.png",
       content:
         "The intersection of AI and human verification is fascinating. Biometric tech is advancing so rapidly! 🤖",
-      timestamp: "5h",
-      createdAt: "2024-01-15T07:00:00Z",
+      timestamp: "2025-09-07T07:00:00Z",
+      createdAt: "2025-09-07T07:00:00Z",
       isVerified: true,
+      views: 89,
     },
   ],
   qa: [
@@ -230,9 +237,10 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       authorAvatar: "/diverse-user-avatars.png",
       content:
         "This is the Q&A community! Ask any questions about Forum, World ID, or anything else. We're here to help! ❓",
-      timestamp: "6h",
-      createdAt: "2024-01-15T06:00:00Z",
+      timestamp: "2025-09-07T06:00:00Z",
+      createdAt: "2025-09-07T06:00:00Z",
       isVerified: true,
+      views: 123,
     },
   ],
   announcements: [
@@ -244,9 +252,10 @@ export const DEMO_MESSAGES: Record<string, Message[]> = {
       authorAvatar: "/announcement-team.png",
       content:
         "🎉 Welcome to Forum Beta! We're excited to launch the world's first human-verified forum platform. More features coming soon!",
-      timestamp: "1d",
-      createdAt: "2024-01-14T12:00:00Z",
+      timestamp: "2025-09-07T12:00:00Z",
+      createdAt: "2025-09-07T12:00:00Z",
       isVerified: true,
+      views: 567,
     },
   ],
 }

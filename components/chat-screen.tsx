@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import type { Message } from "@/types"
 
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
@@ -15,12 +16,7 @@ interface ChatScreenProps {
   communityId?: string
 }
 
-interface Message {
-  id: string
-  author: string
-  authorAvatar: string
-  content: string
-  timestamp: string
+interface ChatMessage extends Message {
   upvotes: number
   downvotes: number
   userVote?: 'up' | 'down' | null
@@ -208,11 +204,11 @@ const demoMessages: Record<string, any[]> = {
 }
 
 export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenProps) {
-  const [messages, setMessages] = useState<any[]>(demoMessages[communityId] || [])
+  const [messages, setMessages] = useState<ChatMessage[]>(demoMessages[communityId] || [])
   const [newMessage, setNewMessage] = useState("")
   const [showReportModal, setShowReportModal] = useState<string | null>(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
-  const [replyingTo, setReplyingTo] = useState<Message | null>(null)
+  const [replyingTo, setReplyingTo] = useState<ChatMessage | null>(null)
   const [showMessageMenu, setShowMessageMenu] = useState<string | null>(null)
   const [editingMessage, setEditingMessage] = useState<string | null>(null)
   const [editText, setEditText] = useState("")
@@ -356,12 +352,17 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
 
     const messageId = `msg_${Date.now()}`
     const currentTime = new Date().toISOString()
-    const message: Message = {
+    const message: ChatMessage = {
       id: messageId,
+      communityId: community.id,
+      authorId: "user_current",
       author: "@You",
       authorAvatar: "/user-profile-avatar.png",
       content: newMessage,
       timestamp: currentTime, // Use ISO string for Firebase compatibility
+      createdAt: currentTime,
+      isVerified: true,
+      views: 0,
       upvotes: 0,
       downvotes: 0,
       replyTo: replyingTo ? {
@@ -443,7 +444,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
     )
   }
 
-  const handleReply = (message: Message) => {
+  const handleReply = (message: ChatMessage) => {
     setReplyingTo(message)
   }
 
@@ -508,6 +509,75 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
       default:
         return <Users className="w-6 h-6 text-white" />
     }
+  }
+
+  // Get message date from timestamp (for grouping)
+  const getMessageDate = (timestamp: string) => {
+    try {
+      // Handle ISO timestamp strings
+      if (timestamp.includes('T') && timestamp.includes('Z')) {
+        return new Date(timestamp).toDateString()
+      }
+      // For relative timestamps, estimate the date
+      const now = new Date()
+      if (timestamp.includes('h')) {
+        const hours = parseInt(timestamp.replace('h', ''))
+        const messageDate = new Date(now.getTime() - (hours * 60 * 60 * 1000))
+        return messageDate.toDateString()
+      } else if (timestamp.includes('m')) {
+        const minutes = parseInt(timestamp.replace('m', ''))
+        const messageDate = new Date(now.getTime() - (minutes * 60 * 1000))
+        return messageDate.toDateString()
+      } else if (timestamp.includes('d')) {
+        const days = parseInt(timestamp.replace('d', ''))
+        const messageDate = new Date(now.getTime() - (days * 24 * 60 * 60 * 1000))
+        return messageDate.toDateString()
+      }
+      return now.toDateString()
+    } catch {
+      return new Date().toDateString()
+    }
+  }
+
+  // Format date for display (DD.MM.YYYY format like Telegram)
+  const formatDateSeparator = (dateString: string) => {
+    try {
+      const date = new Date(dateString)
+      const day = date.getDate().toString().padStart(2, '0')
+      const month = (date.getMonth() + 1).toString().padStart(2, '0')
+      const year = date.getFullYear()
+      return `${day}.${month}.${year}`
+    } catch {
+      return dateString
+    }
+  }
+
+  // Group messages by date and add separators
+  const getMessagesWithDateSeparators = () => {
+    const messagesWithSeparators: any[] = []
+    let lastDate = ''
+    
+    messages.forEach((message, index) => {
+      const messageDate = getMessageDate(message.timestamp)
+      
+      // Add date separator if date changed
+      if (messageDate !== lastDate) {
+        messagesWithSeparators.push({
+          type: 'date-separator',
+          id: `date-${index}`,
+          date: messageDate
+        })
+        lastDate = messageDate
+      }
+      
+      // Add the message
+      messagesWithSeparators.push({
+        type: 'message',
+        ...message
+      })
+    })
+    
+    return messagesWithSeparators
   }
 
   // Check if user can edit message (within 5 minutes)
@@ -607,7 +677,22 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
             <p className="text-muted-foreground text-sm mb-4">Start the conversation by sending the first message.</p>
           </div>
         ) : (
-          messages.map((message) => (
+          getMessagesWithDateSeparators().map((item, index) => {
+            if (item.type === 'date-separator') {
+              return (
+                <div key={item.id} className="flex items-center justify-center my-4">
+                  <div className="flex-1 h-px bg-zinc-300 dark:bg-zinc-600"></div>
+                  <span className="px-3 text-sm text-zinc-500 dark:text-zinc-400 bg-white dark:bg-zinc-900">
+                    {formatDateSeparator(item.date)}
+                  </span>
+                  <div className="flex-1 h-px bg-zinc-300 dark:bg-zinc-600"></div>
+                </div>
+              )
+            }
+            
+            const message = item
+            
+            return (
             <div 
               key={message.id}
               ref={(el) => {
@@ -800,7 +885,8 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
               </CardContent>
             </Card>
             </div>
-          ))
+          )
+          })
         )}
       </div>
 
