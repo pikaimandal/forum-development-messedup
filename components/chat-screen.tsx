@@ -468,6 +468,10 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                       <div className="flex items-center space-x-2">
                         <span className="font-medium text-foreground text-sm">{message.author}</span>
                         <span className="text-xs text-muted-foreground">{formatTimestamp(message.timestamp)}</span>
+                        <div className="flex items-center space-x-1">
+                          <Eye className="w-3 h-3 text-muted-foreground" />
+                          <span className="text-xs text-muted-foreground">{formatNumber(message.views || 0)}</span>
+                        </div>
                       </div>
                       <Button
                         variant="ghost"
@@ -566,11 +570,6 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                       >
                         <MessageCircle className="w-4 h-4" />
                       </button>
-                      
-                      <div className="flex items-center space-x-1">
-                        <Eye className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground min-w-[20px] text-center">{formatNumber(message.views || 0)}</span>
-                      </div>
                     </div>
                   </div>
                 </div>
