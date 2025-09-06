@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown, MessageCircle, Eye, Globe, Code, Newspaper, Brain, HelpCircle, Megaphone } from "lucide-react"
+import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown, MessageCircle, Eye, Globe, Code, Newspaper, Brain, HelpCircle, Megaphone, MoreVertical, Edit, Trash2 } from "lucide-react"
 import { EmojiPicker } from "@/components/emoji-picker"
 
 interface ChatScreenProps {
@@ -119,6 +119,16 @@ const demoMessages: Record<string, any[]> = {
       downvotes: 1,
       views: 789,
     },
+    {
+      id: "4",
+      author: "@worldcitizen",
+      authorAvatar: "/placeholder-user.jpg",
+      content: "Thanks for the warm welcome! I'm excited to contribute to this amazing community and learn from everyone here! 🚀",
+      timestamp: "2m",
+      upvotes: 6,
+      downvotes: 0,
+      views: 234,
+    },
   ],
   developer: [
     {
@@ -203,8 +213,14 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   const [showReportModal, setShowReportModal] = useState<string | null>(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [replyingTo, setReplyingTo] = useState<Message | null>(null)
+  const [showMessageMenu, setShowMessageMenu] = useState<string | null>(null)
+  const [editingMessage, setEditingMessage] = useState<string | null>(null)
+  const [editText, setEditText] = useState("")
   const emojiPickerRef = useRef<HTMLDivElement>(null)
   const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+
+  // Current user (in a real app, this would come from authentication)
+  const currentUser = "@worldcitizen"
 
   const community = communityData[communityId]
   const maxCharacters = 500
@@ -225,6 +241,24 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [showEmojiPicker])
+
+  // Close message menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (showMessageMenu && !target.closest('[data-message-menu]')) {
+        setShowMessageMenu(null)
+      }
+    }
+
+    if (showMessageMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showMessageMenu])
 
   if (!community) {
     return (
@@ -409,6 +443,44 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
     }
   }
 
+  // Check if user can edit message (within 5 minutes)
+  const canEditMessage = (messageTimestamp: string) => {
+    // For demo purposes, allow editing if timestamp shows recent times like "1m", "2m", "3m", "4m"
+    if (messageTimestamp.includes('m') && !messageTimestamp.includes('h')) {
+      const minutes = parseInt(messageTimestamp.replace('m', ''))
+      return minutes <= 5
+    }
+    return false
+  }
+
+  const handleEditMessage = (messageId: string, currentContent: string) => {
+    setEditingMessage(messageId)
+    setEditText(currentContent)
+    setShowMessageMenu(null)
+  }
+
+  const handleSaveEdit = (messageId: string) => {
+    setMessages(prevMessages =>
+      prevMessages.map(message =>
+        message.id === messageId
+          ? { ...message, content: editText }
+          : message
+      )
+    )
+    setEditingMessage(null)
+    setEditText("")
+  }
+
+  const handleCancelEdit = () => {
+    setEditingMessage(null)
+    setEditText("")
+  }
+
+  const handleDeleteMessage = (messageId: string) => {
+    setMessages(prevMessages => prevMessages.filter(message => message.id !== messageId))
+    setShowMessageMenu(null)
+  }
+
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -472,6 +544,41 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                           <Eye className="w-3 h-3 text-muted-foreground" />
                           <span className="text-xs text-muted-foreground">{formatNumber(message.views || 0)}</span>
                         </div>
+                        {/* Three-dot menu for message author only */}
+                        {message.author === currentUser && (
+                          <div className="relative" data-message-menu>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="p-1 h-6 w-6 opacity-60 hover:opacity-100"
+                              onClick={() => setShowMessageMenu(showMessageMenu === message.id ? null : message.id)}
+                            >
+                              <MoreVertical className="w-3 h-3" />
+                            </Button>
+                            {showMessageMenu === message.id && (
+                              <div className="absolute right-0 top-7 bg-background border border-border rounded-md shadow-lg z-10 min-w-[120px]">
+                                <div className="py-1">
+                                  {canEditMessage(message.timestamp) && (
+                                    <button
+                                      className="w-full px-3 py-2 text-sm text-left hover:bg-muted flex items-center space-x-2"
+                                      onClick={() => handleEditMessage(message.id, message.content)}
+                                    >
+                                      <Edit className="w-3 h-3" />
+                                      <span>Edit</span>
+                                    </button>
+                                  )}
+                                  <button
+                                    className="w-full px-3 py-2 text-sm text-left hover:bg-muted flex items-center space-x-2 text-destructive"
+                                    onClick={() => handleDeleteMessage(message.id)}
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                    <span>Delete</span>
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                       <Button
                         variant="ghost"
@@ -516,7 +623,36 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                       </div>
                     )}
                     
-                    <p className="text-foreground text-sm leading-relaxed break-words whitespace-pre-wrap">{message.content}</p>
+                    {/* Message Content - Edit Mode or Display Mode */}
+                    {editingMessage === message.id ? (
+                      <div className="space-y-2">
+                        <Textarea
+                          value={editText}
+                          onChange={(e) => setEditText(e.target.value)}
+                          className="min-h-[60px] text-sm"
+                          placeholder="Edit your message..."
+                        />
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            size="sm"
+                            onClick={() => handleSaveEdit(message.id)}
+                            className="h-7 px-3 text-xs"
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={handleCancelEdit}
+                            className="h-7 px-3 text-xs"
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-foreground text-sm leading-relaxed break-words whitespace-pre-wrap">{message.content}</p>
+                    )}
                     
                     {/* Vote and Reply buttons */}
                     <div className="flex items-center space-x-3 mt-2">
