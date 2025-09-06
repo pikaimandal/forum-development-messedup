@@ -220,7 +220,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
 
   // Current user (in a real app, this would come from authentication)
-  const currentUser = "@worldcitizen"
+  const currentUser = "@You"
 
   const community = communityData[communityId]
   const maxCharacters = 500
