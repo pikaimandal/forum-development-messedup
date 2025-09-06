@@ -388,7 +388,8 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                           variant="ghost"
                           size="sm"
                           onClick={() => handleVote(message.id, 'up')}
-                          className={`p-1 h-7 w-7 focus:outline-none focus:ring-0 ${message.userVote === 'up' ? 'text-green-500 bg-green-50' : 'text-muted-foreground hover:text-green-500'}`}
+                          className={`p-1 h-7 w-7 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:outline-none active:outline-none ${message.userVote === 'up' ? 'text-green-500 bg-green-50' : 'text-muted-foreground hover:text-green-500'}`}
+                          style={{ outline: 'none', boxShadow: 'none' }}
                         >
                           <ChevronUp className="w-4 h-4" />
                         </Button>
@@ -400,7 +401,8 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                           variant="ghost"
                           size="sm"
                           onClick={() => handleVote(message.id, 'down')}
-                          className={`p-1 h-7 w-7 focus:outline-none focus:ring-0 ${message.userVote === 'down' ? 'text-red-500 bg-red-50' : 'text-muted-foreground hover:text-red-500'}`}
+                          className={`p-1 h-7 w-7 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:outline-none active:outline-none ${message.userVote === 'down' ? 'text-red-500 bg-red-50' : 'text-muted-foreground hover:text-red-500'}`}
+                          style={{ outline: 'none', boxShadow: 'none' }}
                         >
                           <ChevronDown className="w-4 h-4" />
                         </Button>
