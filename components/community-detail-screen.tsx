@@ -159,6 +159,13 @@ export function CommunityDetailScreen({
     return num.toString()
   }
 
+  const getIconTextColor = (communityId: string) => {
+    if (communityId === "global-chat") {
+      return "text-primary-foreground"
+    }
+    return "text-white"
+  }
+
   const handleJoin = async () => {
     setIsJoining(true)
     // Simulate API call
@@ -192,7 +199,7 @@ export function CommunityDetailScreen({
               <div
                 className={`w-16 h-16 rounded-2xl ${community.color} flex items-center justify-center flex-shrink-0`}
               >
-                <community.icon className="w-8 h-8 text-white" />
+                <community.icon className={`w-8 h-8 ${getIconTextColor(community.id)}`} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2 mb-2">

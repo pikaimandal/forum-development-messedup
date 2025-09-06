@@ -46,7 +46,7 @@ const communityData: Record<string, Community> = {
     name: "Global Chat",
     color: "bg-primary",
     members: 18500,
-    icon: <Globe className="w-4 h-4 text-white" />,
+    icon: <Globe className="w-4 h-4 text-primary-foreground" />,
   },
   developer: {
     id: "developer",
@@ -384,7 +384,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   const getCommunityLargeIcon = (communityId: string) => {
     switch (communityId) {
       case "global-chat":
-        return <Globe className="w-6 h-6 text-white" />
+        return <Globe className="w-6 h-6 text-primary-foreground" />
       case "developer":
         return <Code className="w-6 h-6 text-white" />
       case "world-news":

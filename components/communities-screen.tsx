@@ -26,7 +26,7 @@ const communities: Community[] = [
     description: "General discussion room for all topics and community introductions",
     members: 18500,
     color: "bg-primary",
-    icon: <Globe className="w-5 h-5 text-white" />,
+    icon: <Globe className="w-5 h-5 text-primary-foreground" />,
   },
   {
     id: "developer",
