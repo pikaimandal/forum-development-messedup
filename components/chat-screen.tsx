@@ -574,37 +574,41 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
             </div>
           )}
           
-          <div className="flex items-end space-x-2">
+          <div className="flex items-start space-x-2">
             <div className="flex-1 relative">
               <Textarea
                 placeholder={`Message ${community.name}...`}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value.slice(0, maxCharacters))}
-                className="min-h-[50px] max-h-24 resize-none bg-input border-border text-sm pr-10"
-                rows={2}
+                className="min-h-[48px] max-h-32 resize-none bg-input border-border text-sm pr-20 pb-6"
+                rows={1}
               />
+              
+              {/* Emoji picker button */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleEmojiClick}
-                className="absolute right-2 top-2 p-1 h-6 w-6"
+                className="absolute right-12 top-2 p-1 h-6 w-6"
               >
                 <Smile className="w-4 h-4" />
               </Button>
-              <div className="flex items-center justify-between mt-1">
-                <span
-                  className={`text-xs ${newMessage.length > maxCharacters * 0.9 ? "text-destructive" : "text-muted-foreground"}`}
-                >
-                  {newMessage.length}/{maxCharacters}
-                </span>
-              </div>
+              
+              {/* Character counter inside input */}
+              <span
+                className={`absolute right-2 bottom-1 text-xs pointer-events-none ${
+                  newMessage.length > maxCharacters * 0.9 ? "text-destructive" : "text-muted-foreground"
+                }`}
+              >
+                {newMessage.length}/{maxCharacters}
+              </span>
             </div>
 
             <Button
               onClick={handleSendMessage}
               disabled={!newMessage.trim() || newMessage.length > maxCharacters}
               size="sm"
-              className="h-[50px] px-4"
+              className="h-[48px] w-[48px] flex-shrink-0"
             >
               <Send className="w-4 h-4" />
             </Button>
