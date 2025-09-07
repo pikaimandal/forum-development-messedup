@@ -181,7 +181,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
           <Card>
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-foreground">{currentUser.stats.comments}</div>
-              <div className="text-sm text-muted-foreground">Comments Made</div>
+              <div className="text-sm text-muted-foreground">Replies Made</div>
             </CardContent>
           </Card>
         </div>
@@ -468,7 +468,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
               </div>
               <div>
                 <div className="text-lg font-bold text-foreground">{currentUser.stats.comments}</div>
-                <div className="text-xs text-muted-foreground">Comments</div>
+                <div className="text-xs text-muted-foreground">Replies</div>
               </div>
               <div>
                 <div className="text-lg font-bold text-foreground">{currentUser.stats.upvotes}</div>
@@ -581,7 +581,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
         </svg>
       ),
       title: "My Activity",
-      subtitle: "View your posts and comments",
+      subtitle: "View your posts and replies",
     },
     {
       icon: (
