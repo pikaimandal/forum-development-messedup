@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown, MessageCircle, Eye, Globe, Code, Newspaper, Brain, HelpCircle, Megaphone, MoreVertical, Edit, Trash2 } from "lucide-react"
+import { ArrowLeft, Users, Smile, Send, ThumbsUp, ThumbsDown, MessageCircle, Eye, Globe, Code, Newspaper, Brain, HelpCircle, Megaphone, MoreVertical, Edit, Trash2 } from "lucide-react"
 import { EmojiPicker } from "@/components/emoji-picker"
 import { useUser } from "@/contexts/user-context"
 import { formatUsername, formatTimestamp, formatNumber, generateAvatarUrl } from "@/lib/utils"
@@ -857,7 +857,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                           }}
                           onFocus={(e) => e.target.blur()}
                         >
-                          <ChevronUp className="w-4 h-4" />
+                          <ThumbsUp className="w-4 h-4" />
                         </button>
                         <span className="text-xs text-muted-foreground min-w-[20px] text-center">{message.upvotes}</span>
                       </div>
@@ -875,7 +875,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
                           }}
                           onFocus={(e) => e.target.blur()}
                         >
-                          <ChevronDown className="w-4 h-4" />
+                          <ThumbsDown className="w-4 h-4" />
                         </button>
                         <span className="text-xs text-muted-foreground min-w-[20px] text-center">{message.downvotes}</span>
                       </div>
