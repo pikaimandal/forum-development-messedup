@@ -93,7 +93,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
       })
 
       if (!sessionResponse.ok) {
-        throw new Error('Session creation failed')
+        const errorData = await sessionResponse.json()
+        throw new Error(errorData.error || 'Session creation failed')
       }
 
       // Fetch user data and complete login

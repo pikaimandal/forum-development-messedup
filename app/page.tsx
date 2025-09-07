@@ -96,8 +96,15 @@ export default function ForumApp() {
     setCurrentScreen("main")
   }
 
-  const handleLogout = () => {
-    setUser(null) // Clear user data
+  const handleLogout = async () => {
+    try {
+      // Clear session on server
+      await fetch('/api/logout', { method: 'POST' })
+    } catch (error) {
+      console.error('Logout API error:', error)
+    }
+    // Clear user data in frontend
+    setUser(null)
     setCurrentScreen("login")
   }
 
