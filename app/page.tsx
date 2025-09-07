@@ -20,13 +20,10 @@ export default function ForumApp() {
   const isAuthenticated = user !== null
 
   useEffect(() => {
-    // Initialize MiniKit and check World App environment
+    // Initialize MiniKit and check World App environment immediately
     const initializeMiniKit = async () => {
       try {
-        // Wait a moment for MiniKit to be available
-        await new Promise(resolve => setTimeout(resolve, 100))
-        
-        // Check if running in World App environment
+        // Check if running in World App environment (immediate check)
         const isInWorldApp = typeof window !== "undefined" && MiniKit.isInstalled()
         console.log("World App detection:", isInWorldApp)
         setIsWorldApp(isInWorldApp)
@@ -36,7 +33,7 @@ export default function ForumApp() {
           setMiniKitInitialized(true)
           console.log("MiniKit initialized successfully in World App")
           
-          // Check for existing session
+          // Check for existing session quickly
           try {
             const sessionResponse = await fetch('/api/session')
             if (sessionResponse.ok) {
@@ -68,22 +65,22 @@ export default function ForumApp() {
     console.log("Splash complete - isWorldApp:", isWorldApp, "miniKitInitialized:", miniKitInitialized, "isAuthenticated:", isAuthenticated)
     setInitializationComplete(true)
     
-    // Move to appropriate screen based on environment
+    // Move to appropriate screen based on current environment detection
     if (isWorldApp === false) {
-      // Not in World App - will show warning via render logic
+      // Definitely not in World App - show warning
       setCurrentScreen("world-app-warning")
-      return
-    }
-    
-    if (isWorldApp === true && miniKitInitialized) {
+    } else if (isWorldApp === true && miniKitInitialized) {
+      // Definitely in World App and initialized
       if (isAuthenticated) {
         setCurrentScreen("main")
       } else {
         setCurrentScreen("login")
       }
     } else {
-      // Still not sure about environment, keep showing splash
-      setCurrentScreen("splash")
+      // If still uncertain about environment after 3 seconds, assume not in World App
+      console.log("Environment detection uncertain after timeout, assuming not in World App")
+      setIsWorldApp(false)
+      setCurrentScreen("world-app-warning")
     }
   }
   const handleLogin = () => {

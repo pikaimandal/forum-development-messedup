@@ -10,9 +10,9 @@ export function SplashScreen({ onInitializationComplete }: SplashScreenProps) {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    // Simple smooth progress from 0 to 100% over 2.5 seconds
-    const duration = 2500 // 2.5 seconds
-    const steps = 50 // Number of updates
+    // Simple smooth progress from 0 to 100% over exactly 3 seconds
+    const duration = 3000 // 3 seconds
+    const steps = 60 // Number of updates (50ms intervals)
     const stepDuration = duration / steps
     const progressPerStep = 100 / steps
 
@@ -25,16 +25,26 @@ export function SplashScreen({ onInitializationComplete }: SplashScreenProps) {
 
       if (newProgress >= 100) {
         clearInterval(progressInterval)
-        // Wait a moment to show 100% then complete
-        setTimeout(() => {
-          if (onInitializationComplete) {
-            onInitializationComplete()
-          }
-        }, 300)
+        // Complete immediately when 100% is reached
+        if (onInitializationComplete) {
+          onInitializationComplete()
+        }
       }
     }, stepDuration)
 
-    return () => clearInterval(progressInterval)
+    // Failsafe: Force completion after exactly 3 seconds
+    const failsafeTimeout = setTimeout(() => {
+      clearInterval(progressInterval)
+      setProgress(100)
+      if (onInitializationComplete) {
+        onInitializationComplete()
+      }
+    }, duration)
+
+    return () => {
+      clearInterval(progressInterval)
+      clearTimeout(failsafeTimeout)
+    }
   }, [onInitializationComplete])
 
   return (
