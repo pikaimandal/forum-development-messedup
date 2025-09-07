@@ -98,22 +98,28 @@ export async function POST(req: NextRequest) {
     cookies().delete("siwe-nonce")
     console.log("🗑️ Nonce cookie cleared")
 
-    // Create session data
-    const sessionData = {
-      address,
-      isAuthenticated: true,
-      isOrbVerified,
-      authenticatedAt: new Date().toISOString()
-    }
+    // Only create session if ORB verification was completed here
+    // If ORB verification is skipped, frontend must handle session creation after verification
+    if (!skipOrbVerification) {
+      // Create session data
+      const sessionData = {
+        address,
+        isAuthenticated: true,
+        isOrbVerified,
+        authenticatedAt: new Date().toISOString()
+      }
 
-    // Set session cookie
-    cookies().set("session", JSON.stringify(sessionData), {
-      secure: true,
-      httpOnly: true,
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 7 // 7 days
-    })
-    console.log("🍪 Session cookie set successfully")
+      // Set session cookie
+      cookies().set("session", JSON.stringify(sessionData), {
+        secure: true,
+        httpOnly: true,
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 24 * 7 // 7 days
+      })
+      console.log("🍪 Session cookie set successfully")
+    } else {
+      console.log("⏭️ Skipping session creation - frontend will handle after ORB verification")
+    }
 
     console.log("✅ SIWE verification completed successfully")
     return NextResponse.json({ 

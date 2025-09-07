@@ -83,6 +83,19 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
         return
       }
 
+      // Create session after successful ORB verification
+      const sessionResponse = await fetch('/api/create-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ address })
+      })
+
+      if (!sessionResponse.ok) {
+        throw new Error('Session creation failed')
+      }
+
       // Fetch user data and complete login
       const userData = await fetchUserData(address, isOrbVerified)
       setUser(userData)
