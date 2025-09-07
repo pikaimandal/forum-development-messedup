@@ -20,16 +20,20 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   const handleWalletAuth = async () => {
     try {
       // Step 1: Start authentication
+      console.log("🚀 Starting wallet authentication flow")
       setLoadingState('authenticating')
 
       // Get nonce from backend
+      console.log("📡 Fetching nonce from backend...")
       const nonceResponse = await fetch('/api/nonce')
       if (!nonceResponse.ok) {
-        throw new Error('Failed to get nonce')
+        throw new Error(`Failed to get nonce: ${nonceResponse.status} ${nonceResponse.statusText}`)
       }
       const { nonce } = await nonceResponse.json()
+      console.log("✅ Nonce received:", nonce?.substring(0, 8) + "...")
 
       // Trigger wallet authentication using MiniKit
+      console.log("🔐 Triggering MiniKit wallet authentication...")
       const walletAuthResult = await MiniKit.commandsAsync.walletAuth({
         nonce,
         requestId: `auth-${Date.now()}`,
@@ -38,12 +42,18 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
         statement: "Sign in to Forum - Human Verified Community",
       })
 
+      console.log("📋 Wallet auth result:", {
+        hasCommandPayload: !!walletAuthResult.commandPayload,
+        payloadKeys: walletAuthResult.commandPayload ? Object.keys(walletAuthResult.commandPayload) : []
+      })
+
       // Check if the command was successful
       if (!walletAuthResult.commandPayload) {
         throw new Error('Authentication failed - no response from wallet')
       }
 
       // Verify the SIWE signature on backend (but without ORB verification check)
+      console.log("🔍 Verifying SIWE signature on backend...")
       const verifyResponse = await fetch('/api/complete-siwe', {
         method: 'POST',
         headers: {
@@ -56,17 +66,27 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
         })
       })
 
+      console.log("📡 Backend verification response:", {
+        status: verifyResponse.status,
+        statusText: verifyResponse.statusText,
+        ok: verifyResponse.ok
+      })
+
       if (!verifyResponse.ok) {
         const errorData = await verifyResponse.json()
+        console.log("❌ Backend verification failed:", errorData)
         throw new Error(errorData.error || 'Authentication verification failed')
       }
 
       const { address } = await verifyResponse.json()
+      console.log("✅ SIWE verification successful for address:", address?.substring(0, 10) + "...")
 
       // Step 2: Now check ORB verification
+      console.log("🔍 Starting ORB verification check...")
       setLoadingState('verifying')
 
       const isOrbVerified = await checkOrbVerification(address)
+      console.log("🔍 ORB verification result:", isOrbVerified)
       
       // Check if user is allowed to use the app
       if (!isUserAllowed(address, isOrbVerified)) {
@@ -74,16 +94,26 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
       }
 
       // Step 3: Fetch user data and complete login
+      console.log("👤 Fetching user data from MiniKit...")
       const userData = await fetchUserData(address, isOrbVerified)
       setUser(userData)
 
+      console.log("✅ Login completed successfully!")
       // Complete login
       onLogin()
 
     } catch (error) {
-      console.error('Login error:', error)
+      console.error('💥 Login error:', error)
       const errorMessage = error instanceof Error ? error.message : 'Authentication failed. Please try again.'
-      alert(errorMessage)
+      
+      // Show detailed error information
+      let detailedMessage = errorMessage
+      if (error instanceof Error && error.message.includes('fetch')) {
+        detailedMessage += '\n\nNetwork Error: Please check your internet connection and try again.'
+      }
+      
+      console.log('🚨 Showing error to user:', detailedMessage)
+      alert(`🔒 Authentication Error:\n\n${detailedMessage}`)
     } finally {
       setLoadingState('idle')
     }
