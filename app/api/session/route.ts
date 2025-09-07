@@ -13,7 +13,8 @@ export async function GET(req: NextRequest) {
     
     return NextResponse.json({ 
       isAuthenticated: true,
-      address: sessionData.address
+      address: sessionData.address,
+      isOrbVerified: sessionData.isOrbVerified || false
     })
 
   } catch (error) {

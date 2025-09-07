@@ -39,10 +39,10 @@ export default function ForumApp() {
           try {
             const sessionResponse = await fetch('/api/session')
             if (sessionResponse.ok) {
-              const { isAuthenticated, address } = await sessionResponse.json()
+              const { isAuthenticated, address, isOrbVerified } = await sessionResponse.json()
               if (isAuthenticated && address) {
                 // Restore user session
-                const userData = await fetchUserData(address)
+                const userData = await fetchUserData(address, isOrbVerified)
                 setUser(userData)
               }
             }
