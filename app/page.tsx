@@ -8,19 +8,19 @@ import { MainApp } from "@/components/main-app"
 import { WorldAppWarning } from "@/components/world-app-warning"
 import { useUser } from "@/contexts/user-context"
 import type { Screen } from "@/types"
-import { APP_CONFIG } from "@/lib/constants"
 
 export default function ForumApp() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("splash")
   const [isWorldApp, setIsWorldApp] = useState<boolean | null>(null)
   const [miniKitInitialized, setMiniKitInitialized] = useState(false)
+  const [initializationComplete, setInitializationComplete] = useState(false)
   const { user, setUser, fetchUserData } = useUser()
 
   // Use authentication state from user context
   const isAuthenticated = user !== null
 
   useEffect(() => {
-    // Initialize MiniKit and check World App environment during splash screen
+    // Initialize MiniKit and check World App environment
     const initializeMiniKit = async () => {
       try {
         // Wait a moment for MiniKit to be available
@@ -60,25 +60,29 @@ export default function ForumApp() {
 
     // Start initialization immediately
     initializeMiniKit()
+  }, [setUser])
 
-    // Show splash screen for configured duration to complete initialization
-    const timer = setTimeout(() => {
-      // After splash duration, move to next screen based on environment
-      if (isWorldApp !== null) {
-        if (isWorldApp && miniKitInitialized) {
-          // If user is already authenticated, go to main app
-          if (isAuthenticated) {
-            setCurrentScreen("main")
-          } else {
-            setCurrentScreen("login")
-          }
-        }
-        // If not in World App, the component will show warning automatically
+  // Handle splash screen completion
+  const handleSplashComplete = () => {
+    setInitializationComplete(true)
+    
+    // Move to appropriate screen based on environment and auth state
+    if (isWorldApp === false) {
+      // Will show WorldAppWarning via render logic below
+      return
+    }
+    
+    if (isWorldApp && miniKitInitialized) {
+      if (isAuthenticated) {
+        setCurrentScreen("main")
+      } else {
+        setCurrentScreen("login")
       }
-    }, APP_CONFIG.splashDuration)
-
-    return () => clearTimeout(timer)
-  }, [isWorldApp, miniKitInitialized, isAuthenticated, setUser])
+    } else {
+      // Still initializing, stay on splash
+      setCurrentScreen("splash")
+    }
+  }
   const handleLogin = () => {
     // Authentication is handled in LoginScreen via user context
     setCurrentScreen("main")
@@ -90,8 +94,8 @@ export default function ForumApp() {
   }
 
   // Show splash screen during initialization
-  if (currentScreen === "splash") {
-    return <SplashScreen />
+  if (currentScreen === "splash" || !initializationComplete) {
+    return <SplashScreen onInitializationComplete={handleSplashComplete} />
   }
 
   // Block access if not in World App
@@ -101,7 +105,7 @@ export default function ForumApp() {
 
   // Show loading if still checking World App environment
   if (isWorldApp === null) {
-    return <SplashScreen />
+    return <SplashScreen onInitializationComplete={handleSplashComplete} />
   }
 
   if (currentScreen === "login") {

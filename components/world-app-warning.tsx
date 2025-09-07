@@ -19,15 +19,15 @@ export function WorldAppWarning() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-destructive">Access Restricted</CardTitle>
-          <CardDescription>Forum can only be opened within World App</CardDescription>
+          <CardDescription>Forum must be opened within WorldApp to continue</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="text-center">
             <p className="text-sm text-muted-foreground mb-4">
               Forum is a Worldcoin mini app designed to run exclusively within the World App ecosystem for verified humans.
             </p>
-            <p className="text-sm text-muted-foreground">
-              Please open this app through World App to continue.
+            <p className="text-sm font-medium text-foreground">
+              Forum must be opened within WorldApp to continue.
             </p>
           </div>
 
