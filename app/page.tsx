@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { MiniKit } from "@worldcoin/minikit-js"
 import { SplashScreen } from "@/components/splash-screen"
 import { LoginScreen } from "@/components/login-screen"
@@ -14,15 +14,21 @@ export default function ForumApp() {
   const [isWorldApp, setIsWorldApp] = useState<boolean | null>(null)
   const [miniKitInitialized, setMiniKitInitialized] = useState(false)
   const [initializationComplete, setInitializationComplete] = useState(false)
+  const [hasInitialized, setHasInitialized] = useState(false) // Prevent re-initialization
   const { user, setUser, fetchUserData } = useUser()
 
   // Use authentication state from user context
   const isAuthenticated = user !== null
 
   useEffect(() => {
+    // Prevent multiple initializations
+    if (hasInitialized) return
+
     // Initialize MiniKit and check World App environment immediately
     const initializeMiniKit = async () => {
       try {
+        setHasInitialized(true) // Mark as initialized immediately
+        
         // Check if running in World App environment (immediate check)
         const isInWorldApp = typeof window !== "undefined" && MiniKit.isInstalled()
         console.log("World App detection:", isInWorldApp)
@@ -58,10 +64,12 @@ export default function ForumApp() {
 
     // Start initialization immediately
     initializeMiniKit()
-  }, [setUser])
+  }, []) // Remove setUser from dependencies to prevent re-runs
 
-  // Handle splash screen completion
-  const handleSplashComplete = () => {
+  // Handle splash screen completion (only run once)
+  const handleSplashComplete = useCallback(() => {
+    if (initializationComplete) return // Prevent multiple calls
+    
     console.log("Splash complete - isWorldApp:", isWorldApp, "miniKitInitialized:", miniKitInitialized, "isAuthenticated:", isAuthenticated)
     setInitializationComplete(true)
     
@@ -82,7 +90,7 @@ export default function ForumApp() {
       setIsWorldApp(false)
       setCurrentScreen("world-app-warning")
     }
-  }
+  }, [initializationComplete, isWorldApp, miniKitInitialized, isAuthenticated])
   const handleLogin = () => {
     // Authentication is handled in LoginScreen via user context
     setCurrentScreen("main")

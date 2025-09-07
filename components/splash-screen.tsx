@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 interface SplashScreenProps {
   onInitializationComplete?: () => void
@@ -8,8 +8,19 @@ interface SplashScreenProps {
 
 export function SplashScreen({ onInitializationComplete }: SplashScreenProps) {
   const [progress, setProgress] = useState(0)
+  const hasStarted = useRef(false)
+  const callbackRef = useRef(onInitializationComplete)
+
+  // Update callback ref when prop changes
+  useEffect(() => {
+    callbackRef.current = onInitializationComplete
+  }, [onInitializationComplete])
 
   useEffect(() => {
+    // Prevent multiple progress animations
+    if (hasStarted.current) return
+    hasStarted.current = true
+
     // Simple smooth progress from 0 to 100% over exactly 3 seconds
     const duration = 3000 // 3 seconds
     const steps = 60 // Number of updates (50ms intervals)
@@ -26,8 +37,8 @@ export function SplashScreen({ onInitializationComplete }: SplashScreenProps) {
       if (newProgress >= 100) {
         clearInterval(progressInterval)
         // Complete immediately when 100% is reached
-        if (onInitializationComplete) {
-          onInitializationComplete()
+        if (callbackRef.current) {
+          callbackRef.current()
         }
       }
     }, stepDuration)
@@ -36,8 +47,8 @@ export function SplashScreen({ onInitializationComplete }: SplashScreenProps) {
     const failsafeTimeout = setTimeout(() => {
       clearInterval(progressInterval)
       setProgress(100)
-      if (onInitializationComplete) {
-        onInitializationComplete()
+      if (callbackRef.current) {
+        callbackRef.current()
       }
     }, duration)
 
@@ -45,7 +56,7 @@ export function SplashScreen({ onInitializationComplete }: SplashScreenProps) {
       clearInterval(progressInterval)
       clearTimeout(failsafeTimeout)
     }
-  }, [onInitializationComplete])
+  }, []) // No dependencies - runs only once
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
