@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ChevronLeft } from "lucide-react"
 import { useUser } from "@/contexts/user-context"
 import { formatUsername, formatWalletAddress, generateAvatarUrl } from "@/lib/utils"
-import { MiniKit } from "@worldcoin/minikit-js"
+import { MiniKit, Permission, RequestPermissionPayload } from "@worldcoin/minikit-js"
 
 interface ProfileScreenProps {
   onLogout: () => void
@@ -51,30 +51,46 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
   const handleNotificationToggle = async (enabled: boolean) => {
     if (enabled) {
       try {
-        // Check if we're in the World App environment
-        if (typeof window !== 'undefined' && 'MiniKit' in window) {
-          // In World App - this will trigger the native permission popup
-          console.log("Requesting notification permission from World App...")
+        console.log("Requesting notification permission from World App...")
+        
+        const requestPermissionPayload: RequestPermissionPayload = {
+          permission: Permission.Notifications,
+        }
+        
+        const response = await MiniKit.commandsAsync.requestPermission(requestPermissionPayload)
+        console.log("Permission response:", response)
+        
+        // Check the finalPayload for success/error
+        const finalPayload = response.finalPayload
+        
+        if (finalPayload && 'error_code' in finalPayload) {
+          // This is an error response
+          setNotifications(false)
+          const errorCode = finalPayload.error_code
+          console.log("❌ Notification permission failed:", errorCode)
           
-          // The World App will automatically show the permission dialog
-          // For now, we'll set the state optimistically
-          setNotifications(true)
-          console.log("Notification permission requested from World App")
-        } else if (typeof window !== 'undefined' && 'Notification' in window) {
-          // Fallback to standard web notifications for development
-          const permission = await Notification.requestPermission()
-          
-          if (permission === 'granted') {
-            setNotifications(true)
-            console.log("Web notification permission granted")
-          } else {
-            setNotifications(false)
-            console.log("Web notification permission denied")
+          // Handle specific error cases
+          switch (errorCode) {
+            case 'already_granted':
+              console.log("Permission already granted - setting state to true")
+              setNotifications(true)
+              break
+            case 'already_requested':
+              console.log("User already declined once. Direct them to settings: worldcoin.org/settings/miniapps")
+              break
+            case 'permission_disabled':
+              console.log("Notifications disabled for World App entirely")
+              break
+            case 'user_rejected':
+              console.log("User declined permission request")
+              break
+            default:
+              console.log("Unknown error:", errorCode)
           }
         } else {
-          // No notification support
-          console.log("Notifications not supported in this environment")
-          setNotifications(false)
+          // Success response
+          setNotifications(true)
+          console.log("✅ Notification permission granted successfully")
         }
       } catch (error) {
         console.error("Error requesting notification permission:", error)
@@ -83,6 +99,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
     } else {
       // User is turning off notifications
       setNotifications(false)
+      console.log("User disabled notifications")
     }
   }
 
