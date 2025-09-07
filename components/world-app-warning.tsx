@@ -18,8 +18,7 @@ export function WorldAppWarning() {
 
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-destructive">Access Restricted</CardTitle>
-          <CardDescription>Forum must be opened within WorldApp to continue</CardDescription>
+          <CardTitle className="text-2xl font-bold text-destructive">Access Denied</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="text-center">

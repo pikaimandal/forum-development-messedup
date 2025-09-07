@@ -79,13 +79,19 @@ export function SplashScreen({ onInitializationComplete }: SplashScreenProps) {
         <p className="text-muted-foreground text-lg">The world's first human-verified forum</p>
       </div>
 
-      {/* Progress Bar Only */}
+      {/* Progress Bar with Percentage */}
       <div className="w-full max-w-md">
-        <div className="w-full bg-muted rounded-full h-2">
+        <div className="w-full bg-muted rounded-full h-2 relative">
           <div 
             className="bg-primary h-2 rounded-full transition-all duration-100 ease-linear"
             style={{ width: `${progress}%` }}
           ></div>
+        </div>
+        {/* Percentage Display */}
+        <div className="text-center mt-3">
+          <span className="text-sm font-medium text-muted-foreground">
+            {Math.round(progress)}%
+          </span>
         </div>
       </div>
     </div>
