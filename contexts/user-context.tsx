@@ -3,12 +3,16 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
 import { MiniKit } from "@worldcoin/minikit-js"
 import { formatUsername, generateAvatarUrl } from "@/lib/utils"
+import { UserService, CommunityMemberService } from "@/lib/firebase-services"
+import { FirebaseUser } from "@/types/firebase"
 
 export interface User {
   address: string
   username: string
   profilePicture?: string
   isVerified: boolean
+  isOrbVerified: boolean
+  joinedCommunities: string[]
 }
 
 interface UserContextType {
@@ -16,35 +20,80 @@ interface UserContextType {
   setUser: (user: User | null) => void
   isAuthenticated: boolean
   fetchUserData: (address: string, isOrbVerified?: boolean) => Promise<User>
+  refreshUserCommunities: () => Promise<void>
+  isLoading: boolean
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const isAuthenticated = user !== null
 
-  // Helper function to get user data from MiniKit
-  const fetchUserData = async (address: string, isOrbVerified?: boolean) => {
+  // Helper function to get user data from MiniKit and Firebase
+  const fetchUserData = async (address: string, isOrbVerified?: boolean): Promise<User> => {
+    setIsLoading(true)
     try {
-      // Get user data by address from MiniKit
+      // Get user data from MiniKit
       const userData = await MiniKit.getUserByAddress(address)
+      
+      // Prepare user data for Firebase
+      const userForFirebase = {
+        id: address,
+        username: userData.username || `user_${address.slice(-4)}`,
+        displayName: userData.username || `user_${address.slice(-4)}`,
+        profilePicture: generateAvatarUrl(address, userData.profilePictureUrl),
+        isVerified: true,
+        isOrbVerified: isOrbVerified ?? true
+      }
+
+      // Save/update user in Firebase
+      await UserService.createUser(userForFirebase)
+
+      // Get user's joined communities
+      const joinedCommunities = await CommunityMemberService.getUserCommunities(address)
+
+      // Update user activity
+      await UserService.updateUserActivity(address)
+
+      // Return user data for context
       return {
         address,
-        username: userData.username || `user_${address.slice(-4)}`, // Remove @ here, will be added by formatUsername
-        profilePicture: generateAvatarUrl(address, userData.profilePictureUrl), // Use generated avatar
-        isVerified: isOrbVerified ?? true // Use provided verification status or default to true
+        username: userForFirebase.username,
+        profilePicture: userForFirebase.profilePicture,
+        isVerified: userForFirebase.isVerified,
+        isOrbVerified: userForFirebase.isOrbVerified,
+        joinedCommunities
       }
     } catch (error) {
       console.error("Error fetching user data:", error)
       // Fallback user data
+      const joinedCommunities = await CommunityMemberService.getUserCommunities(address).catch(() => [])
+      
       return {
         address,
-        username: `user_${address.slice(-4)}`, // Remove @ here, will be added by formatUsername
-        profilePicture: generateAvatarUrl(address), // Use generated avatar with fallback
-        isVerified: isOrbVerified ?? true // Use provided verification status or default to true
+        username: `user_${address.slice(-4)}`,
+        profilePicture: generateAvatarUrl(address),
+        isVerified: true,
+        isOrbVerified: isOrbVerified ?? true,
+        joinedCommunities
       }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Refresh user's joined communities
+  const refreshUserCommunities = async (): Promise<void> => {
+    if (!user) return
+    
+    try {
+      const joinedCommunities = await CommunityMemberService.getUserCommunities(user.address)
+      setUser(prevUser => prevUser ? { ...prevUser, joinedCommunities } : null)
+    } catch (error) {
+      console.error("Error refreshing user communities:", error)
     }
   }
 
@@ -54,8 +103,17 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setUser(userData)
     },
     isAuthenticated,
-    fetchUserData
+    fetchUserData,
+    refreshUserCommunities,
+    isLoading
   }
+
+  return (
+    <UserContext.Provider value={value}>
+      {children}
+    </UserContext.Provider>
+  )
+}
 
   return (
     <UserContext.Provider value={value}>

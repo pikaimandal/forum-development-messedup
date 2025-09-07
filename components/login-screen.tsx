@@ -16,7 +16,7 @@ type LoadingState = 'idle' | 'authenticating' | 'verifying'
 export function LoginScreen({ onLogin }: LoginScreenProps) {
   const [loadingState, setLoadingState] = useState<LoadingState>('idle')
   const [error, setError] = useState<string>('')
-  const { fetchUserData, setUser } = useUser()
+  const { fetchUserData, setUser, isLoading } = useUser()
 
   const handleWalletAuth = async () => {
     try {
@@ -97,7 +97,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
         throw new Error(errorData.error || 'Session creation failed')
       }
 
-      // Fetch user data and complete login
+      // Fetch user data from MiniKit and save to Firebase
       const userData = await fetchUserData(address, isOrbVerified)
       setUser(userData)
 
@@ -124,7 +124,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     }
   }
 
-  const isLoading = loadingState !== 'idle'
+  const isButtonLoading = loadingState !== 'idle' || isLoading
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
       {/* App Logo */}
@@ -150,7 +150,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
           <Button 
             onClick={handleWalletAuth} 
-            disabled={isLoading}
+            disabled={isButtonLoading}
             className="w-full h-12 text-lg font-semibold" 
             size="lg"
           >

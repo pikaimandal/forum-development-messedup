@@ -1,11 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Search, TrendingUp, Users, Clock, Star } from "lucide-react"
+import { CommunityService } from "@/lib/firebase-services"
+import { FirebaseCommunity } from "@/types/firebase"
 
 interface DiscoverScreenProps {
   onNavigateToCommunity: (communityId: string) => void
@@ -65,36 +67,45 @@ const trendingTopics: TrendingTopic[] = [
   },
 ]
 
-const featuredCommunities: FeaturedCommunity[] = [
-  {
-    id: "developer",
-    name: "Developer",
-    description: "Technical discussions and development help",
-    members: 5600,
-    color: "bg-emerald-500",
-    category: "Technology",
-  },
-  {
-    id: "ai-tech",
-    name: "AI & Tech",
-    description: "Artificial intelligence and technology innovations",
-    members: 8900,
-    color: "bg-purple-500",
-    category: "Technology",
-    isNew: true,
-  },
-  {
-    id: "world-news",
-    name: "World News",
-    description: "Global news and current events discussion",
-    members: 12300,
-    color: "bg-blue-500",
-    category: "News",
-  },
-]
+const featuredCommunities: FeaturedCommunity[] = []
 
 export function DiscoverScreen({ onNavigateToCommunity }: DiscoverScreenProps) {
   const [searchQuery, setSearchQuery] = useState("")
+  const [featuredCommunities, setFeaturedCommunities] = useState<FeaturedCommunity[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Load featured communities from Firebase
+  useEffect(() => {
+    const loadFeaturedCommunities = async () => {
+      try {
+        setLoading(true)
+        const firebaseCommunities = await CommunityService.getAllCommunities()
+        
+        // Transform Firebase communities to featured format (show top 3 by member count)
+        const transformedCommunities: FeaturedCommunity[] = firebaseCommunities
+          .sort((a, b) => b.memberCount - a.memberCount)
+          .slice(0, 3)
+          .map((community: FirebaseCommunity) => ({
+            id: community.id,
+            name: community.name,
+            description: community.description,
+            members: community.memberCount,
+            color: community.color,
+            category: community.category,
+            isNew: community.memberCount < 100, // Mark as new if less than 100 members
+          }))
+        
+        setFeaturedCommunities(transformedCommunities)
+      } catch (error) {
+        console.error("Error loading featured communities:", error)
+        setFeaturedCommunities([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadFeaturedCommunities()
+  }, [])
 
   const formatNumber = (num: number) => {
     if (num >= 1000) {
