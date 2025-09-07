@@ -28,6 +28,7 @@ export default function ForumApp() {
         
         // Check if running in World App environment
         const isInWorldApp = typeof window !== "undefined" && MiniKit.isInstalled()
+        console.log("World App detection:", isInWorldApp)
         setIsWorldApp(isInWorldApp)
         
         if (isInWorldApp) {
@@ -64,22 +65,24 @@ export default function ForumApp() {
 
   // Handle splash screen completion
   const handleSplashComplete = () => {
+    console.log("Splash complete - isWorldApp:", isWorldApp, "miniKitInitialized:", miniKitInitialized, "isAuthenticated:", isAuthenticated)
     setInitializationComplete(true)
     
-    // Move to appropriate screen based on environment and auth state
+    // Move to appropriate screen based on environment
     if (isWorldApp === false) {
-      // Will show WorldAppWarning via render logic below
+      // Not in World App - will show warning via render logic
+      setCurrentScreen("world-app-warning")
       return
     }
     
-    if (isWorldApp && miniKitInitialized) {
+    if (isWorldApp === true && miniKitInitialized) {
       if (isAuthenticated) {
         setCurrentScreen("main")
       } else {
         setCurrentScreen("login")
       }
     } else {
-      // Still initializing, stay on splash
+      // Still not sure about environment, keep showing splash
       setCurrentScreen("splash")
     }
   }
@@ -98,8 +101,8 @@ export default function ForumApp() {
     return <SplashScreen onInitializationComplete={handleSplashComplete} />
   }
 
-  // Block access if not in World App
-  if (isWorldApp === false) {
+  // Block access if not in World App (explicit screen state or environment check)
+  if (currentScreen === "world-app-warning" || isWorldApp === false) {
     return <WorldAppWarning />
   }
 
