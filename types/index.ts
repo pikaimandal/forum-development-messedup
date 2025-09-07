@@ -50,7 +50,7 @@ export interface UserProfile extends User {
 }
 
 // Screen and navigation types
-export type Screen = "splash" | "login" | "main"
+export type Screen = "splash" | "login" | "main" | "world-app-warning"
 export type MainScreen = "communities" | "community-detail" | "chat" | "discover" | "profile"
 
 // Component prop types

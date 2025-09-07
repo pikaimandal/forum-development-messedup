@@ -2,7 +2,7 @@ export const APP_CONFIG = {
   name: "Forum",
   description: "Human Verified Community",
   version: "1.0.0",
-  splashDuration: 3000,
+  splashDuration: 3000, // 3 seconds to complete MiniKit initialization
   maxMessageLength: 500,
 } as const
 
