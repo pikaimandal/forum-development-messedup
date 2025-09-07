@@ -15,6 +15,25 @@ export function formatNumber(num: number): string {
   return num.toString()
 }
 
+export function formatUsername(username: string): string {
+  // Add '@' prefix if not already present
+  if (username.startsWith('@')) {
+    return username
+  }
+  return `@${username}`
+}
+
+export function formatWalletAddress(address: string): string {
+  // Format wallet address as 0x123...abc (first 5 chars + ... + last 5 chars)
+  if (!address || address.length < 10) {
+    return address
+  }
+  
+  const prefix = address.substring(0, 5) // 0x123
+  const suffix = address.substring(address.length - 5) // abc12
+  return `${prefix}...${suffix}`
+}
+
 export function formatTimestamp(timestamp: string): string {
   // Convert relative time to more readable format
   if (timestamp === "now") return "now"

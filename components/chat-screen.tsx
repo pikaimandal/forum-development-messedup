@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown, MessageCircle, Eye, Globe, Code, Newspaper, Brain, HelpCircle, Megaphone, MoreVertical, Edit, Trash2 } from "lucide-react"
 import { EmojiPicker } from "@/components/emoji-picker"
 import { useUser } from "@/contexts/user-context"
+import { formatUsername, formatTimestamp, formatNumber } from "@/lib/utils"
 
 interface ChatScreenProps {
   onBack: () => void
@@ -218,7 +219,7 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   const { user } = useUser()
 
   // Current user data from authentication
-  const currentUser = user?.username || "@You"
+  const currentUser = formatUsername(user?.username || "You")
   const currentUserAvatar = user?.profilePicture || "/user-profile-avatar.png"
 
   const community = communityData[communityId]

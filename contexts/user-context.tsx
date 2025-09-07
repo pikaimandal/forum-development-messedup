@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
 import { MiniKit } from "@worldcoin/minikit-js"
+import { formatUsername } from "@/lib/utils"
 
 export interface User {
   address: string
@@ -31,7 +32,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       const userData = await MiniKit.getUserByAddress(address)
       return {
         address,
-        username: userData.username || `@user_${address.slice(-4)}`,
+        username: userData.username || `user_${address.slice(-4)}`, // Remove @ here, will be added by formatUsername
         profilePicture: userData.profilePictureUrl,
         isVerified: isOrbVerified ?? true // Use provided verification status or default to true
       }
@@ -40,7 +41,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       // Fallback user data
       return {
         address,
-        username: `@user_${address.slice(-4)}`,
+        username: `user_${address.slice(-4)}`, // Remove @ here, will be added by formatUsername
         profilePicture: undefined,
         isVerified: isOrbVerified ?? true // Use provided verification status or default to true
       }

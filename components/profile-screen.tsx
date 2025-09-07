@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ChevronLeft } from "lucide-react"
 import { useUser } from "@/contexts/user-context"
+import { formatUsername, formatWalletAddress } from "@/lib/utils"
 
 interface ProfileScreenProps {
   onLogout: () => void
@@ -47,13 +48,13 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
 
   // Use real user data or fallback to demo data
   const currentUser = {
-    username: user?.username || "@worldcitizen",
+    username: formatUsername(user?.username || "worldcitizen"),
     displayName: user?.username || "World Citizen",
     avatar: user?.profilePicture || "/user-profile-avatar.png",
     bio: "Passionate about human verification and decentralized identity. Building the future of digital trust.",
     isVerified: user?.isVerified || true,
     verificationDate: "January 2024",
-    walletAddress: user?.address || "0x1234...5678",
+    walletAddress: formatWalletAddress(user?.address || "0x1234567890abcdef1234567890abcdef12345678"),
     stats: {
       posts: 23,
       comments: 156,
