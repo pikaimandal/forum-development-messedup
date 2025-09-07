@@ -40,8 +40,8 @@ export function generateAvatarUrl(address: string, profilePictureUrl?: string): 
     return profilePictureUrl
   }
   
-  // Fallback to DiceBear API using wallet address as seed
-  return `https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=${address}`
+  // Fallback to DiceBear API using wallet address as seed with fun-emoji style
+  return `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${address}`
 }
 
 export function formatTimestamp(timestamp: string): string {
