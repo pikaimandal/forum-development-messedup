@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ChevronLeft } from "lucide-react"
 import { useUser } from "@/contexts/user-context"
-import { formatUsername, formatWalletAddress } from "@/lib/utils"
+import { formatUsername, formatWalletAddress, generateAvatarUrl } from "@/lib/utils"
 
 interface ProfileScreenProps {
   onLogout: () => void
@@ -50,7 +50,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
   const currentUser = {
     username: formatUsername(user?.username || "worldcitizen"),
     displayName: user?.username || "World Citizen",
-    avatar: user?.profilePicture || "/user-profile-avatar.png",
+    avatar: user?.profilePicture || generateAvatarUrl(user?.address || "0x1234567890abcdef1234567890abcdef12345678"),
     bio: "Passionate about human verification and decentralized identity. Building the future of digital trust.",
     isVerified: user?.isVerified || true,
     verificationDate: "January 2024",

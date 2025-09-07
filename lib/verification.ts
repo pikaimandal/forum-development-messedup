@@ -4,16 +4,24 @@
 
 import { getIsUserVerified } from "@worldcoin/minikit-js"
 
-// Test wallet address that's allowed without ORB verification
-const TEST_WALLET_ADDRESS = "0x948c3dc6a9ed728f010d1f163d45de4a3415b53a"
+// Test wallet addresses that are allowed without ORB verification
+const TEST_WALLET_ADDRESSES = [
+  "0x948c3dc6a9ed728f010d1f163d45de4a3415b53a",
+  "0x1599459dff7a3da0922de1aa05383aa6ca0379cb",
+  "0x6c064b714d76ce67fc25771644c427d98df2c62d"
+]
 
 /**
  * Check if a wallet address is ORB verified using the official MiniKit getIsUserVerified function
  */
 export async function checkOrbVerification(address: string): Promise<boolean> {
   try {
-    // Allow test wallet address without verification for testing
-    if (address.toLowerCase() === TEST_WALLET_ADDRESS.toLowerCase()) {
+    // Allow test wallet addresses without verification for testing
+    const isTestWallet = TEST_WALLET_ADDRESSES.some(
+      testAddress => address.toLowerCase() === testAddress.toLowerCase()
+    )
+    
+    if (isTestWallet) {
       console.log(`Test wallet ${address} allowed without ORB verification`)
       return true
     }
@@ -35,8 +43,12 @@ export async function checkOrbVerification(address: string): Promise<boolean> {
  * Check if a user is allowed to use the app based on verification status
  */
 export function isUserAllowed(address: string, isOrbVerified: boolean): boolean {
-  // Always allow test wallet
-  if (address.toLowerCase() === TEST_WALLET_ADDRESS.toLowerCase()) {
+  // Always allow test wallets
+  const isTestWallet = TEST_WALLET_ADDRESSES.some(
+    testAddress => address.toLowerCase() === testAddress.toLowerCase()
+  )
+  
+  if (isTestWallet) {
     return true
   }
   
@@ -48,7 +60,11 @@ export function isUserAllowed(address: string, isOrbVerified: boolean): boolean 
  * Get verification status message for UI
  */
 export function getVerificationMessage(address: string, isOrbVerified: boolean): string {
-  if (address.toLowerCase() === TEST_WALLET_ADDRESS.toLowerCase()) {
+  const isTestWallet = TEST_WALLET_ADDRESSES.some(
+    testAddress => address.toLowerCase() === testAddress.toLowerCase()
+  )
+  
+  if (isTestWallet) {
     return "Test account - verification bypassed"
   }
   

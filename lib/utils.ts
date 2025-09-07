@@ -34,6 +34,16 @@ export function formatWalletAddress(address: string): string {
   return `${prefix}...${suffix}`
 }
 
+export function generateAvatarUrl(address: string, profilePictureUrl?: string): string {
+  // First try to use the MiniKit profile picture if available
+  if (profilePictureUrl) {
+    return profilePictureUrl
+  }
+  
+  // Fallback to DiceBear API using wallet address as seed
+  return `https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=${address}`
+}
+
 export function formatTimestamp(timestamp: string): string {
   // Convert relative time to more readable format
   if (timestamp === "now") return "now"

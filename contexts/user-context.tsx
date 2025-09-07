@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
 import { MiniKit } from "@worldcoin/minikit-js"
-import { formatUsername } from "@/lib/utils"
+import { formatUsername, generateAvatarUrl } from "@/lib/utils"
 
 export interface User {
   address: string
@@ -33,7 +33,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       return {
         address,
         username: userData.username || `user_${address.slice(-4)}`, // Remove @ here, will be added by formatUsername
-        profilePicture: userData.profilePictureUrl,
+        profilePicture: generateAvatarUrl(address, userData.profilePictureUrl), // Use generated avatar
         isVerified: isOrbVerified ?? true // Use provided verification status or default to true
       }
     } catch (error) {
@@ -42,7 +42,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       return {
         address,
         username: `user_${address.slice(-4)}`, // Remove @ here, will be added by formatUsername
-        profilePicture: undefined,
+        profilePicture: generateAvatarUrl(address), // Use generated avatar with fallback
         isVerified: isOrbVerified ?? true // Use provided verification status or default to true
       }
     }
