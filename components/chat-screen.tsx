@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ArrowLeft, Users, Smile, Send, ChevronUp, ChevronDown, MessageCircle, Eye, Globe, Code, Newspaper, Brain, HelpCircle, Megaphone, MoreVertical, Edit, Trash2 } from "lucide-react"
 import { EmojiPicker } from "@/components/emoji-picker"
+import { useUser } from "@/contexts/user-context"
 
 interface ChatScreenProps {
   onBack: () => void
@@ -214,9 +215,11 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
   const [editText, setEditText] = useState("")
   const emojiPickerRef = useRef<HTMLDivElement>(null)
   const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const { user } = useUser()
 
-  // Current user (in a real app, this would come from authentication)
-  const currentUser = "@You"
+  // Current user data from authentication
+  const currentUser = user?.username || "@You"
+  const currentUserAvatar = user?.profilePicture || "/user-profile-avatar.png"
 
   const community = communityData[communityId]
   const maxCharacters = 500
@@ -355,9 +358,9 @@ export function ChatScreen({ onBack, communityId = "global-chat" }: ChatScreenPr
     const message: ChatMessage = {
       id: messageId,
       communityId: community.id,
-      authorId: "user_current",
-      author: "@You",
-      authorAvatar: "/user-profile-avatar.png",
+      authorId: user?.address || "user_current",
+      author: currentUser,
+      authorAvatar: currentUserAvatar,
       content: newMessage,
       timestamp: currentTime, // Use ISO string for Firebase compatibility
       createdAt: currentTime,

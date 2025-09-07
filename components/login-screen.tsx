@@ -1,13 +1,75 @@
 "use client"
 
+import { useState } from "react"
+import { MiniKit } from "@worldcoin/minikit-js"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useUser } from "@/contexts/user-context"
 
 interface LoginScreenProps {
   onLogin: () => void
 }
 
 export function LoginScreen({ onLogin }: LoginScreenProps) {
+  const [isLoading, setIsLoading] = useState(false)
+  const { fetchUserData, setUser } = useUser()
+
+  const handleWalletAuth = async () => {
+    try {
+      setIsLoading(true)
+
+      // Step 1: Get nonce from backend
+      const nonceResponse = await fetch('/api/nonce')
+      if (!nonceResponse.ok) {
+        throw new Error('Failed to get nonce')
+      }
+      const { nonce } = await nonceResponse.json()
+
+      // Step 2: Trigger wallet authentication using MiniKit
+      const walletAuthResult = await MiniKit.commandsAsync.walletAuth({
+        nonce,
+        requestId: `auth-${Date.now()}`,
+        expirationTime: new Date(Date.now() + 10 * 60 * 1000).toISOString(), // 10 minutes
+        notBefore: new Date().toISOString(),
+        statement: "Sign in to Forum - Human Verified Community",
+      })
+
+      if (walletAuthResult.commandPayload.status === 'error') {
+        throw new Error(walletAuthResult.commandPayload.message || 'Authentication failed')
+      }
+
+      // Step 3: Verify the SIWE signature on backend
+      const verifyResponse = await fetch('/api/complete-siwe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          payload: walletAuthResult.commandPayload,
+          nonce
+        })
+      })
+
+      if (!verifyResponse.ok) {
+        throw new Error('Authentication verification failed')
+      }
+
+      const { address } = await verifyResponse.json()
+
+      // Step 4: Fetch user data from MiniKit
+      const userData = await fetchUserData(address)
+      setUser(userData)
+
+      // Step 5: Complete login
+      onLogin()
+
+    } catch (error) {
+      console.error('Wallet authentication error:', error)
+      alert('Authentication failed. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
       {/* App Logo */}
@@ -31,13 +93,18 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             <p className="text-sm text-muted-foreground mb-4">Connect with verified humans from around the world</p>
           </div>
 
-          <Button onClick={onLogin} className="w-full h-12 text-lg font-semibold" size="lg">
+          <Button 
+            onClick={handleWalletAuth} 
+            disabled={isLoading}
+            className="w-full h-12 text-lg font-semibold" 
+            size="lg"
+          >
             <img 
               src="/worldcoinlogo.png" 
               alt="Worldcoin Logo" 
               className="w-5 h-5 mr-2 object-contain"
             />
-            Login with Wallet
+            {isLoading ? 'Authenticating...' : 'Login with Wallet'}
           </Button>
 
           <div className="text-center">

@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ChevronLeft } from "lucide-react"
+import { useUser } from "@/contexts/user-context"
 
 interface ProfileScreenProps {
   onLogout: () => void
@@ -34,24 +35,6 @@ interface UserProfile {
   stats: UserStats
 }
 
-// Demo user data
-const currentUser: UserProfile = {
-  username: "@worldcitizen",
-  displayName: "", // Removed for auto-population
-  avatar: "/user-profile-avatar.png",
-  bio: "", // Removed for auto-population
-  isVerified: true,
-  verificationDate: "January 2024",
-  walletAddress: "0x1234...5678",
-  stats: {
-    posts: 23,
-    comments: 156,
-    upvotes: 892,
-    communities: 8,
-    joinDate: "December 2023",
-  },
-}
-
 export function ProfileScreen({ onLogout }: ProfileScreenProps) {
   const [darkMode, setDarkMode] = useState(false)
   const [notifications, setNotifications] = useState(true)
@@ -59,10 +42,35 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
   const [showTerms, setShowTerms] = useState(false)
   const [showPrivacy, setShowPrivacy] = useState(false)
   const [currentView, setCurrentView] = useState<"main" | "activity" | "help" | "terms">("main")
+  
+  const { user, setUser } = useUser()
+
+  // Use real user data or fallback to demo data
+  const currentUser = {
+    username: user?.username || "@worldcitizen",
+    displayName: user?.username || "World Citizen",
+    avatar: user?.profilePicture || "/user-profile-avatar.png",
+    bio: "Passionate about human verification and decentralized identity. Building the future of digital trust.",
+    isVerified: user?.isVerified || true,
+    verificationDate: "January 2024",
+    walletAddress: user?.address || "0x1234...5678",
+    stats: {
+      posts: 23,
+      comments: 156,
+      upvotes: 892,
+      communities: 8,
+      joinDate: "December 2023",
+    },
+  }
 
   const handleDarkModeToggle = (enabled: boolean) => {
     setDarkMode(enabled)
     document.documentElement.classList.toggle("dark", enabled)
+  }
+
+  const handleLogout = () => {
+    setUser(null) // Clear user data
+    onLogout()
   }
 
   const handleMenuItemClick = (view: "activity" | "help" | "terms") => {
@@ -543,7 +551,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
 
         {/* Logout Button */}
         <div className="px-4 pb-6">
-          <Button variant="destructive" onClick={onLogout} className="w-full">
+          <Button variant="destructive" onClick={handleLogout} className="w-full">
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"

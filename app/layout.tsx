@@ -4,6 +4,7 @@ import { DM_Sans } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { MiniKitProvider } from "@/components/minikit-provider"
+import { UserProvider } from "@/contexts/user-context"
 import "./globals.css"
 
 const dmSans = DM_Sans({
@@ -35,8 +36,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans ${dmSans.variable} antialiased`}>
         <MiniKitProvider>
-          <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
-          <Analytics />
+          <UserProvider>
+            <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+            <Analytics />
+          </UserProvider>
         </MiniKitProvider>
       </body>
     </html>
