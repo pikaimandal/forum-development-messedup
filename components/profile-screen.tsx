@@ -59,8 +59,8 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
       posts: 23,
       comments: 156,
       upvotes: 892,
-      communities: 8,
-      joinDate: "December 2023",
+      communities: 6,
+      joinDate: "September 2025",
     },
   }
 
