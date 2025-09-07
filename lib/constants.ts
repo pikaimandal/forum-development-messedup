@@ -25,5 +25,5 @@ export const MESSAGE_TYPES = {
   SYSTEM: "system",
 } as const
 
-// Message editing time limit (5 minutes in milliseconds)
-export const MESSAGE_EDIT_TIME_LIMIT = 5 * 60 * 1000
+// Default communities for new users
+export const DEFAULT_JOINED_COMMUNITIES = ["global-chat", "world-news", "qa", "announcements"] as const
