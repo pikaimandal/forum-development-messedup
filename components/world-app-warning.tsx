@@ -19,7 +19,7 @@ export function WorldAppWarning() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-destructive">Access Restricted</CardTitle>
-          <CardDescription>This mini app can only be opened within World App</CardDescription>
+          <CardDescription>Forum can only be opened within World App</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="text-center">
