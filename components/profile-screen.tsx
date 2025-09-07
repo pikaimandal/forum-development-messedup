@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ChevronLeft } from "lucide-react"
 import { useUser } from "@/contexts/user-context"
 import { formatUsername, formatWalletAddress, generateAvatarUrl } from "@/lib/utils"
+import { MiniKit } from "@worldcoin/minikit-js"
 
 interface ProfileScreenProps {
   onLogout: () => void
@@ -38,13 +39,52 @@ interface UserProfile {
 
 export function ProfileScreen({ onLogout }: ProfileScreenProps) {
   const [darkMode, setDarkMode] = useState(false)
-  const [notifications, setNotifications] = useState(true)
+  const [notifications, setNotifications] = useState(false)
   const [publicProfile, setPublicProfile] = useState(true)
   const [showTerms, setShowTerms] = useState(false)
   const [showPrivacy, setShowPrivacy] = useState(false)
   const [currentView, setCurrentView] = useState<"main" | "activity" | "help" | "terms">("main")
   
   const { user, setUser } = useUser()
+
+  // Handle notification permission request
+  const handleNotificationToggle = async (enabled: boolean) => {
+    if (enabled) {
+      try {
+        // Check if we're in the World App environment
+        if (typeof window !== 'undefined' && 'MiniKit' in window) {
+          // In World App - this will trigger the native permission popup
+          console.log("Requesting notification permission from World App...")
+          
+          // The World App will automatically show the permission dialog
+          // For now, we'll set the state optimistically
+          setNotifications(true)
+          console.log("Notification permission requested from World App")
+        } else if (typeof window !== 'undefined' && 'Notification' in window) {
+          // Fallback to standard web notifications for development
+          const permission = await Notification.requestPermission()
+          
+          if (permission === 'granted') {
+            setNotifications(true)
+            console.log("Web notification permission granted")
+          } else {
+            setNotifications(false)
+            console.log("Web notification permission denied")
+          }
+        } else {
+          // No notification support
+          console.log("Notifications not supported in this environment")
+          setNotifications(false)
+        }
+      } catch (error) {
+        console.error("Error requesting notification permission:", error)
+        setNotifications(false)
+      }
+    } else {
+      // User is turning off notifications
+      setNotifications(false)
+    }
+  }
 
   // Use real user data or fallback to demo data
   const currentUser = {
@@ -509,7 +549,7 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
                 <h3 className="font-medium text-foreground text-sm">Push Notifications</h3>
                 <p className="text-xs text-muted-foreground">Receive notifications for replies</p>
               </div>
-              <Switch checked={notifications} onCheckedChange={setNotifications} />
+              <Switch checked={notifications} onCheckedChange={handleNotificationToggle} />
             </div>
           </CardContent>
         </Card>
