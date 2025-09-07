@@ -29,13 +29,14 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
       const walletAuthResult = await MiniKit.commandsAsync.walletAuth({
         nonce,
         requestId: `auth-${Date.now()}`,
-        expirationTime: new Date(Date.now() + 10 * 60 * 1000).toISOString(), // 10 minutes
-        notBefore: new Date().toISOString(),
+        expirationTime: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+        notBefore: new Date(),
         statement: "Sign in to Forum - Human Verified Community",
       })
 
-      if (walletAuthResult.commandPayload.status === 'error') {
-        throw new Error(walletAuthResult.commandPayload.message || 'Authentication failed')
+      // Check if the command was successful
+      if (!walletAuthResult.commandPayload) {
+        throw new Error('Authentication failed - no response from wallet')
       }
 
       // Step 3: Verify the SIWE signature on backend
@@ -51,7 +52,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
       })
 
       if (!verifyResponse.ok) {
-        throw new Error('Authentication verification failed')
+        const errorData = await verifyResponse.json()
+        throw new Error(errorData.error || 'Authentication verification failed')
       }
 
       const { address } = await verifyResponse.json()
@@ -65,7 +67,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
     } catch (error) {
       console.error('Wallet authentication error:', error)
-      alert('Authentication failed. Please try again.')
+      const errorMessage = error instanceof Error ? error.message : 'Authentication failed. Please try again.'
+      alert(errorMessage)
     } finally {
       setIsLoading(false)
     }
